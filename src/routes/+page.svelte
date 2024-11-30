@@ -1,5 +1,7 @@
 <script lang="ts">
+	import Week from '$lib/components/Week.svelte';
 	import Counter from './Counter.svelte';
+	const now = new Date();
 </script>
 
 <svelte:head>
@@ -8,7 +10,11 @@
 </svelte:head>
 
 <section>
-	<h1>Todos</h1>
+	<h1>Todos ({now.toLocaleDateString(navigator.language, { month: 'long' })})</h1>
+
+	<article>
+		<Week />
+	</article>
 
 	<Counter />
 </section>

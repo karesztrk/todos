@@ -1,20 +1,22 @@
 <script lang="ts">
 	import Header from './Header.svelte';
-	import '../reset.css';
 	import '../app.css';
 
 	let { children } = $props();
 </script>
 
-<div class="app">
-	<Header />
+<Header />
 
-	<main>
-		{@render children()}
-	</main>
+<main>
+	{@render children()}
+</main>
 
-	<footer></footer>
-</div>
+<footer></footer>
 
 <style>
+	main,
+	footer {
+		grid-column: content;
+		container: main / inline-size;
+	}
 </style>

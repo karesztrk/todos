@@ -6,4 +6,8 @@
 </header>
 
 <style>
+	header {
+		grid-column: content;
+		container: header / inline-size;
+	}
 </style>
