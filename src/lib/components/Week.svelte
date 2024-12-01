@@ -31,54 +31,78 @@
 				{name}</t-header
 			>
 			<input type="text" />
+			<t-footer></t-footer>
 		</t-day>
 	{/each}
 	<t-day someday>
 		<t-header>Someday</t-header>
 		<input type="text" />
+		<t-footer></t-footer>
 	</t-day>
 	<t-day someday>
-		<t-header>Someday</t-header>
+		<t-header></t-header>
 		<input type="text" />
+		<t-footer></t-footer>
 	</t-day>
 	<t-day someday>
-		<t-header>Someday</t-header>
+		<t-header></t-header>
 		<input type="text" />
+		<t-footer></t-footer>
 	</t-day>
 </t-week>
 
 <style>
 	t-week {
 		--min-width: 100px;
+		--max-row-height: 30px;
+		--min-height: 90vh;
 		--columns: 6;
 		--active-color: hotpink;
+		min-block-size: var(--min-height);
 		display: grid;
 		grid-template-columns: repeat(var(--columns), minmax(min(100%, var(--min-width)), 1fr));
-		gap: 2rem;
-
+		/* grid-template-rows: repeat(auto-fill, minmax(100%, var(--max-row-height))); */
+		grid-auto-rows: minmax(100%, var(--max-row-height));
+		column-gap: 2rem;
 		t-day {
-			min-height: 100px;
-			grid-row: span 2;
+			display: grid;
+			grid-template-rows: subgrid;
+			grid-row: span 6;
 
 			&[weekend] {
-				grid-row: span 1;
+				grid-row: span 3;
+			}
+
+			&:not([weekend]) {
+				t-footer {
+					grid-row: span 4;
+				}
 			}
 
 			&[active] {
 				color: var(--active-color);
 			}
+
 			&[someday] {
 				grid-column: span 2;
-				grid-row: span 1;
 			}
+
 			input {
 				width: 100%;
+				height: auto;
 			}
 
 			t-header {
 				display: flex;
 				justify-content: space-between;
-				border-block-end: 1px solid #000;
+				border-block-end: 1px solid #fff;
+			}
+
+			t-footer {
+				background: repeating-linear-gradient(
+					transparent 0 calc(var(--max-row-height) - 1px),
+					rgba(255, 255, 255, 0.25) calc(var(--max-row-height) - 1px) var(--max-row-height)
+				);
 			}
 		}
 	}

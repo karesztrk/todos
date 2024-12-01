@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Week from '$lib/components/Week.svelte';
-	import Counter from './Counter.svelte';
 	const now = new Date();
 </script>
 
@@ -15,8 +14,6 @@
 	<article>
 		<Week />
 	</article>
-
-	<Counter />
 </section>
 
 <style>
