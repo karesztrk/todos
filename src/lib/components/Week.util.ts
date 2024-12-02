@@ -34,10 +34,14 @@ export const startOfWeek = (date = new Date()) => {
 
 export const isToday = (date: Date) => {
 	const today = new Date();
+	return isSameDay(today, date);
+};
+
+export const isSameDay = (left: Date, right: Date) => {
 	return (
-		date.getDate() === today.getDate() &&
-		date.getMonth() === today.getMonth() &&
-		date.getFullYear() === today.getFullYear()
+		left.getDate() === right.getDate() &&
+		left.getMonth() === right.getMonth() &&
+		left.getFullYear() === right.getFullYear()
 	);
 };
 

@@ -1,6 +1,14 @@
 <script lang="ts">
 	import { DAY, isToday, startOfWeek } from './Week.util';
 
+	interface Todo {
+		date?: Date;
+		text: string;
+		done: boolean;
+	}
+
+	type TodoGroup = Record<string, Todo[]>;
+
 	const dateFormatter = new Intl.DateTimeFormat(navigator.language, {
 		month: '2-digit',
 		day: '2-digit'
@@ -16,27 +24,62 @@
 
 	const days = Array.from({ length: 7 }, (_, i) => new Date(startDate.getTime() + i * DAY)).map(
 		(d) => ({
+			d,
 			date: dateFormatter.format(d),
 			name: dayFormatter.format(d),
 			today: isToday(d)
 		})
 	);
+
+	const todos = $state<Todo[]>([]);
+
+	const derivedTodos = $derived.by<TodoGroup>(() => {
+		return todos.reduce((acc, todo) => {
+			const key = todo.date ? dateFormatter.format(todo.date) : 'someday';
+			acc[key] = acc[key] || [];
+			acc[key].push(todo);
+			return acc;
+		}, {} as TodoGroup);
+	});
+
+	const maxTodos = $derived.by<number>(() => {
+		return Object.values(derivedTodos).reduce((a, b) => Math.max(a, b.length), 0);
+	});
+
+	const onKeydown = (date: Date) => (e: KeyboardEvent) => {
+		const target = e.target as HTMLInputElement;
+		const text = target.value;
+		if (e.key === 'Enter' && text) {
+			const todo: Todo = {
+				date,
+				text,
+				done: false
+			};
+			todos.push(todo);
+			target.value = '';
+		}
+	};
 </script>
 
-<t-week>
-	{#each days as { date, name, today }, i}
+<t-week style="--rows: {maxTodos}">
+	{#each days as { d, date, name, today }, i}
 		<t-day active={today ? '' : undefined} weekend={i === 5 || i === 6 ? '' : undefined}>
 			<t-header
 				><div>{date}</div>
 				{name}</t-header
 			>
-			<input type="text" />
-			<t-footer></t-footer>
+			{#each derivedTodos[date] || [] as todo}
+				<t-todo done={todo.done ? '' : undefined}>
+					{todo.text}
+					<input type="checkbox" bind:checked={todo.done} />
+				</t-todo>
+			{/each}
+			<input type="text" name="text" onkeydown={onKeydown(d)} />
 		</t-day>
 	{/each}
 	<t-day someday>
 		<t-header>Someday</t-header>
-		<input type="text" />
+		<input name="text" type="text" />
 		<t-footer></t-footer>
 	</t-day>
 	<t-day someday>
@@ -57,6 +100,8 @@
 		--max-row-height: 30px;
 		--min-height: 90vh;
 		--columns: 6;
+		--day-span: calc(var(--rows) + 6);
+		--weekend-span: calc(var(--day-span) / 2);
 		--active-color: hotpink;
 		min-block-size: var(--min-height);
 		display: grid;
@@ -67,10 +112,10 @@
 		t-day {
 			display: grid;
 			grid-template-rows: subgrid;
-			grid-row: span 6;
+			grid-row: span var(--day-span);
 
 			&[weekend] {
-				grid-row: span 3;
+				grid-row: span var(--weekend-span);
 			}
 
 			&:not([weekend]) {
@@ -87,15 +132,15 @@
 				grid-column: span 2;
 			}
 
-			input {
-				width: 100%;
-				height: auto;
-			}
-
-			t-header {
+			t-header,
+			t-todo {
 				display: flex;
 				justify-content: space-between;
 				border-block-end: 1px solid #fff;
+			}
+
+			t-todo[done] {
+				text-decoration: line-through;
 			}
 
 			t-footer {
