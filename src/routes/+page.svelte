@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Week from '$lib/components/Week.svelte';
+	import Week from '$lib/components/TodoView.svelte';
 	const now = new Date();
 </script>
 
