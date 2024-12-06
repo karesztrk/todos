@@ -1,4 +1,4 @@
-class Todo {
+class TodoState {
 	date;
 	done = $state(false);
 	text = $state('');
@@ -14,4 +14,4 @@ class Todo {
 	}
 }
 
-export default Todo;
+export default TodoState;
