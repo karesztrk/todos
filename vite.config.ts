@@ -4,6 +4,9 @@ import { browserslistToTargets } from 'lightningcss';
 import browserslist from 'browserslist';
 
 export default defineConfig({
+	server: {
+		host: true
+	},
 	plugins: [sveltekit()],
 	css: {
 		transformer: 'lightningcss',

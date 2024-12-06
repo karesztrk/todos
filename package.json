@@ -35,5 +35,9 @@
 	"packageManager": "pnpm@9.5.0",
 	"engines": {
 		"pnpm": "^9.0.0"
+	},
+	"dependencies": {
+		"jazz-svelte": "^0.0.2",
+		"jazz-tools": "^0.8.35"
 	}
 }

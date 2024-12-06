@@ -1,12 +1,9 @@
-class TodoState {
-	date;
-	done = $state(false);
-	text = $state('');
+import { CoMap, co } from 'jazz-tools';
 
-	constructor(text: string, date?: Date) {
-		this.text = text;
-		this.date = date;
-	}
+class TodoState extends CoMap {
+	date = co.optional.Date;
+	done = co.boolean;
+	text = co.string;
 
 	reset() {
 		this.text = '';

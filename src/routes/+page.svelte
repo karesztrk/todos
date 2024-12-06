@@ -1,5 +1,12 @@
 <script lang="ts">
 	import Week from '$lib/components/TodoView.svelte';
+	import { useAccount } from '$lib/jazz';
+
+	const account = useAccount({
+		root: {}
+	});
+
+	$inspect(account);
 	const now = new Date();
 </script>
 

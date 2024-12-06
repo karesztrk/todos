@@ -1,16 +1,18 @@
 <script lang="ts">
+	import { useAccount } from '$lib/jazz';
 	import Todo from './Todo.svelte';
 	import TodoList from './TodoList.svelte';
 	import TodoState from './TodoState.svelte';
 	import TodoViewState from './TodoViewState.svelte';
 
 	const viewState = new TodoViewState();
+	const { me } = useAccount();
 
 	const onKeydown = (date?: Date) => (e: KeyboardEvent) => {
 		const target = e.target as HTMLInputElement;
 		const text = target.value;
-		if (e.key === 'Enter' && text) {
-			const todo = new TodoState(text, date);
+		if (e.key === 'Enter' && text && me) {
+			const todo = TodoState.create({ text, date, done: false }, { owner: me });
 			viewState.push(todo);
 			target.value = '';
 		}
