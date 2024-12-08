@@ -1,57 +1,65 @@
 <script lang="ts">
-	import Todo from './Todo.svelte';
-	import TodoList from './TodoList.svelte';
-	import TodoState from './TodoState.svelte';
-	import TodoViewState from './TodoViewState.svelte';
+	import { Either } from 'effect';
+	import * as S from '@effect/schema/Schema';
+	import { NonEmptyString1000, SqliteBoolean, cast, database, id, table } from '@evolu/common';
+	import { createEvolu } from '@evolu/common-web';
 
-	const viewState = new TodoViewState();
+	const TodoId = id('Todo');
+
+	const TodoTable = table({
+		id: TodoId,
+		text: NonEmptyString1000,
+		done: S.NullOr(SqliteBoolean)
+	});
+
+	const Database = database({
+		todo: TodoTable
+	});
+
+	const evolu = createEvolu(Database);
+
+	const allTodos = evolu.createQuery((db) =>
+		db
+			.selectFrom('todo')
+			.selectAll()
+			// SQLite doesn't support the boolean type, but we have `cast` helper.
+			.where('done', 'is not', cast(true))
+			.orderBy('createdAt')
+	);
+
+	evolu.loadQuery(allTodos).then((a) => console.log(a));
+
+	const todos = $state(evolu.loadQuery(allTodos));
 
 	const onKeydown = (date?: Date) => (e: KeyboardEvent) => {
 		const target = e.target as HTMLInputElement;
-		const text = target.value;
-		if (e.key === 'Enter' && text) {
-			const todo = new TodoState(text, date);
-			viewState.push(todo);
+		const text = S.decodeUnknownEither(NonEmptyString1000)(target.value);
+		if (e.key === 'Enter' && Either.isRight(text)) {
+			evolu.create('todo', { done: false, text: text.right });
 			target.value = '';
 		}
+		// const todo = new TodoState(text, date);
+		// viewState.push(todo);
 	};
 </script>
 
 <t-view>
-	{#each viewState.weekDays as { d, date, name, today }, i}
-		<TodoList active={today} weekend={i === 5 || i === 6}>
-			{#snippet header()}<div>{date}</div>
-				{name}{/snippet}
-			{#each viewState.list(d) as todo}
-				<Todo {todo} />
+	{#await todos}
+		<div>Loading...</div>
+	{:then todos}
+		<ul>
+			{#each todos.rows as todo}
+				<li>
+					{todo.id}
+					{todo.text}
+					{todo.done}
+					{todo.createdAt}
+				</li>
 			{/each}
-			<input type="text" name="text" onkeydown={onKeydown(d)} />
-		</TodoList>
-	{/each}
-	<TodoList someday>
-		{#snippet header()}Someday{/snippet}
-		{#each viewState.list() as todo}
-			<Todo {todo} />
-		{/each}
-		<input name="text" type="text" onkeydown={onKeydown()} />
-	</TodoList>
+		</ul>
+		<input type="text" name="text" onkeydown={onKeydown()} />
+	{:catch error}
+		<!-- promise was rejected -->
+		<p>Something went wrong: {error.message}</p>
+	{/await}
 </t-view>
-
-<style>
-	t-view {
-		--max-row-height: 30px;
-		--min-height: 100vh;
-		--columns: 6;
-		--active-color: hotpink;
-		min-block-size: var(--min-height);
-		display: grid;
-		grid-template-columns: repeat(var(--columns), 1fr);
-		/* grid-template-rows: repeat(auto-fill, minmax(100%, var(--max-row-height))); */
-		column-gap: 2rem;
-
-		input[type='text'] {
-			width: 100%;
-			height: var(--max-row-height);
-		}
-	}
-</style>

@@ -13,5 +13,6 @@ export default defineConfig({
 	},
 	build: {
 		cssMinify: 'lightningcss'
-	}
+	},
+	worker: { format: 'es' }
 });
