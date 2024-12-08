@@ -13,5 +13,9 @@ export default defineConfig({
 	},
 	build: {
 		cssMinify: 'lightningcss'
+	},
+	worker: { format: 'es' },
+	optimizeDeps: {
+		exclude: ['@evolu/common-web']
 	}
 });

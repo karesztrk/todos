@@ -1,57 +1,46 @@
 <script lang="ts">
-	import Todo from './Todo.svelte';
-	import TodoList from './TodoList.svelte';
-	import TodoState from './TodoState.svelte';
-	import TodoViewState from './TodoViewState.svelte';
+	import { Either } from 'effect';
+	import * as S from '@effect/schema/Schema';
+	import { NonEmptyString1000 } from '@evolu/common';
+	import { db, type TodoRows, allTodos, TodoId } from '$lib/repository/db';
 
-	const viewState = new TodoViewState();
+	const { todos: todosProp }: { todos: TodoRows } = $props();
 
-	const onKeydown = (date?: Date) => (e: KeyboardEvent) => {
+	let todos = $state(todosProp);
+
+	$effect(() => {
+		const unsubscribe = db.subscribeQuery(allTodos)(() => {
+			const result = db.getQuery(allTodos);
+			todos = result;
+		});
+		return () => {
+			unsubscribe();
+		};
+	});
+
+	const onKeydown = () => (e: KeyboardEvent) => {
 		const target = e.target as HTMLInputElement;
-		const text = target.value;
-		if (e.key === 'Enter' && text) {
-			const todo = new TodoState(text, date);
-			viewState.push(todo);
+		const text = S.decodeUnknownEither(NonEmptyString1000)(target.value);
+		if (e.key === 'Enter' && Either.isRight(text)) {
+			db.create('todo', { done: false, text: text.right });
 			target.value = '';
 		}
+	};
+
+	const onDelete = (id: TodoId) => () => {
+		db.update('todo', { id, isDeleted: true });
 	};
 </script>
 
 <t-view>
-	{#each viewState.weekDays as { d, date, name, today }, i}
-		<TodoList active={today} weekend={i === 5 || i === 6}>
-			{#snippet header()}<div>{date}</div>
-				{name}{/snippet}
-			{#each viewState.list(d) as todo}
-				<Todo {todo} />
-			{/each}
-			<input type="text" name="text" onkeydown={onKeydown(d)} />
-		</TodoList>
-	{/each}
-	<TodoList someday>
-		{#snippet header()}Someday{/snippet}
-		{#each viewState.list() as todo}
-			<Todo {todo} />
+	<ul>
+		{#each todos.rows as todo}
+			<li>
+				{todo.text}
+				{todo.done}
+			</li>
+			<button onclick={onDelete(todo.id)}>Delete</button>
 		{/each}
-		<input name="text" type="text" onkeydown={onKeydown()} />
-	</TodoList>
+	</ul>
+	<input type="text" name="text" onkeydown={onKeydown()} />
 </t-view>
-
-<style>
-	t-view {
-		--max-row-height: 30px;
-		--min-height: 100vh;
-		--columns: 6;
-		--active-color: hotpink;
-		min-block-size: var(--min-height);
-		display: grid;
-		grid-template-columns: repeat(var(--columns), 1fr);
-		/* grid-template-rows: repeat(auto-fill, minmax(100%, var(--max-row-height))); */
-		column-gap: 2rem;
-
-		input[type='text'] {
-			width: 100%;
-			height: var(--max-row-height);
-		}
-	}
-</style>
