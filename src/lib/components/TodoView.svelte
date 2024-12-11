@@ -1,17 +1,32 @@
 <script lang="ts">
-	import Todo from './Todo.svelte';
+	import { Either } from 'effect';
+	import * as S from '@effect/schema/Schema';
+	import { NonEmptyString1000 } from '@evolu/common';
+	import { db, type TodoRows, allTodos } from '$lib/repository/db';
 	import TodoList from './TodoList.svelte';
-	import TodoState from './TodoState.svelte';
 	import TodoViewState from './TodoViewState.svelte';
+	import Todo from './Todo.svelte';
 
-	const viewState = new TodoViewState();
+	const { todos: todosProp }: { todos: TodoRows } = $props();
+
+	const viewState = new TodoViewState(todosProp);
+
+	$effect(() => {
+		const unsubscribe = db.subscribeQuery(allTodos)(() => {
+			const result = db.getQuery(allTodos);
+			viewState.clear();
+			viewState.pushAll(result);
+		});
+		return () => {
+			unsubscribe();
+		};
+	});
 
 	const onKeydown = (date?: Date) => (e: KeyboardEvent) => {
 		const target = e.target as HTMLInputElement;
-		const text = target.value;
-		if (e.key === 'Enter' && text) {
-			const todo = new TodoState(text, date);
-			viewState.push(todo);
+		const text = S.decodeUnknownEither(NonEmptyString1000)(target.value);
+		if (e.key === 'Enter' && Either.isRight(text)) {
+			db.create('todo', { done: false, text: text.right, date });
 			target.value = '';
 		}
 	};
@@ -33,7 +48,7 @@
 		{#each viewState.list() as todo}
 			<Todo {todo} />
 		{/each}
-		<input name="text" type="text" onkeydown={onKeydown()} />
+		<input type="text" name="text" onkeydown={onKeydown()} />
 	</TodoList>
 </t-view>
 

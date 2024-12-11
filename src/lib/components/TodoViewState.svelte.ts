@@ -1,7 +1,7 @@
-import type TodoState from './TodoState.svelte';
 import { SvelteMap } from 'svelte/reactivity';
 
 import { DAY, isToday, startOfWeek } from './TodoView.util';
+import type { TodoRow, TodoRows } from '$lib/repository/db';
 const dateFormatter = new Intl.DateTimeFormat(navigator.language, {
 	month: '2-digit',
 	day: '2-digit'
@@ -19,9 +19,9 @@ export interface WeekDay {
 }
 
 class TodoViewState {
-	todos: SvelteMap<string, TodoState[]>;
+	todos: SvelteMap<string, TodoRow[]>;
 
-	constructor(todos: TodoState[] = []) {
+	constructor(todos: TodoRows) {
 		this.todos = new SvelteMap();
 
 		this.pushAll(todos);
@@ -40,14 +40,15 @@ class TodoViewState {
 		);
 	}
 
-	pushAll(todos: TodoState[]) {
-		for (const todo of todos) {
+	pushAll(todos: TodoRows) {
+		for (const todo of todos.rows) {
 			this.push(todo);
 		}
 	}
 
-	push(todo: TodoState) {
-		const key = todo.date ? dateFormatter.format(todo.date) : 'someday';
+	push(todo: TodoRow) {
+		const key =
+			todo !== null && todo.date ? dateFormatter.format(new Date(todo.date as string)) : 'someday';
 		const todos = this.todos.get(key) ?? [];
 		this.todos.set(key, [...todos, todo]);
 	}
@@ -55,6 +56,10 @@ class TodoViewState {
 	list(date?: Date) {
 		const key = date ? dateFormatter.format(date) : 'someday';
 		return this.todos.get(key) ?? [];
+	}
+
+	clear() {
+		this.todos.clear();
 	}
 }
 
