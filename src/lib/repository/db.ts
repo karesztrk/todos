@@ -39,10 +39,19 @@ export type TodoRows = QueryResult<NullableExceptIdCreatedAtUpdatedAt<TodoTable>
 export type TodoRow = TodoRows['row'];
 
 export const db = createEvolu(Database);
-export const allTodos = db.createQuery((db) =>
-	db
-		.selectFrom('todo')
-		.selectAll()
-		// SQLite doesn't support the boolean type, but we have `cast` helper.
-		.where('isDeleted', 'is not', cast(true))
-);
+export const allTodos = ({ start, end }: { start: Date; end: Date }) =>
+	db.createQuery((db) =>
+		db
+			.selectFrom('todo')
+			.selectAll()
+			.where('isDeleted', 'is not', cast(true))
+			.where((eb) => {
+				const filters = [];
+
+				filters.push(eb('date', '>=', cast(start)));
+
+				filters.push(eb('date', '<=', cast(end)));
+
+				return eb.and(filters).or('date', 'is', null);
+			})
+	);

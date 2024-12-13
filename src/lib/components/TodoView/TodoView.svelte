@@ -2,25 +2,14 @@
 	import { Either } from 'effect';
 	import * as S from '@effect/schema/Schema';
 	import { NonEmptyString1000 } from '@evolu/common';
-	import { db, type TodoRows, allTodos } from '$lib/repository/db';
-	import TodoList from './TodoList.svelte';
+	import { db, type TodoRows } from '$lib/repository/db';
+	import TodoList from '$lib/components/TodoList';
 	import TodoViewState from './TodoViewState.svelte';
-	import Todo from './Todo.svelte';
+	import Todo from '$lib/components/Todo';
 
-	const { todos: todosProp }: { todos: TodoRows } = $props();
+	const { todos }: { todos: TodoRows } = $props();
 
-	const viewState = new TodoViewState(todosProp);
-
-	$effect(() => {
-		const unsubscribe = db.subscribeQuery(allTodos)(() => {
-			const result = db.getQuery(allTodos);
-			viewState.clear();
-			viewState.pushAll(result);
-		});
-		return () => {
-			unsubscribe();
-		};
-	});
+	const viewState = $derived(new TodoViewState(todos));
 
 	const onKeydown = (date?: Date) => (e: KeyboardEvent) => {
 		const target = e.target as HTMLInputElement;

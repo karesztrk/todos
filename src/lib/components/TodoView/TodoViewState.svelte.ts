@@ -1,6 +1,4 @@
-import { SvelteMap } from 'svelte/reactivity';
-
-import { DAY, isToday, startOfWeek } from './TodoView.util';
+import { DAY, isToday, startOfWeek, weekDays } from './TodoView.util';
 import type { TodoRow, TodoRows } from '$lib/repository/db';
 const dateFormatter = new Intl.DateTimeFormat(navigator.language, {
 	month: '2-digit',
@@ -19,47 +17,41 @@ export interface WeekDay {
 }
 
 class TodoViewState {
-	todos: SvelteMap<string, TodoRow[]>;
+	todos: Map<string, TodoRow[]>;
 
 	constructor(todos: TodoRows) {
-		this.todos = new SvelteMap();
-
-		this.pushAll(todos);
+		this.todos = this.pushAll(new Map(), todos);
 	}
 
 	get weekDays(): WeekDay[] {
 		const today = new Date();
 		const startDate = startOfWeek(today);
-		return Array.from({ length: 7 }, (_, i) => new Date(startDate.getTime() + i * DAY)).map(
-			(d) => ({
-				d,
-				date: dateFormatter.format(d),
-				name: dayFormatter.format(d),
-				today: isToday(d)
-			})
-		);
+		return weekDays(startDate).map((d) => ({
+			d,
+			date: dateFormatter.format(d),
+			name: dayFormatter.format(d),
+			today: isToday(d)
+		}));
 	}
 
-	pushAll(todos: TodoRows) {
+	pushAll(map: Map<string, TodoRow[]>, todos: TodoRows) {
 		for (const todo of todos.rows) {
-			this.push(todo);
+			this.push(map, todo);
 		}
+		return map;
 	}
 
-	push(todo: TodoRow) {
+	push(map: Map<string, TodoRow[]>, todo: TodoRow) {
 		const key =
 			todo !== null && todo.date ? dateFormatter.format(new Date(todo.date as string)) : 'someday';
-		const todos = this.todos.get(key) ?? [];
-		this.todos.set(key, [...todos, todo]);
+		const todos = map.get(key) ?? [];
+		map.set(key, [...todos, todo]);
+		return map;
 	}
 
 	list(date?: Date) {
 		const key = date ? dateFormatter.format(date) : 'someday';
 		return this.todos.get(key) ?? [];
-	}
-
-	clear() {
-		this.todos.clear();
 	}
 }
 

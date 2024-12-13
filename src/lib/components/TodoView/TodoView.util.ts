@@ -46,3 +46,7 @@ export const isSameDay = (left: Date, right: Date) => {
 };
 
 export const DAY = 24 * 60 * 60 * 1000;
+
+export const weekDays = (start: Date) => Array.from({ length: 7 }, (_, i) => addDays(start, i));
+
+export const addDays = (date: Date, days: number) => new Date(date.getTime() + days * DAY);
