@@ -40,9 +40,16 @@
 
 <section>
 	<h1>Todos ({now.toLocaleDateString(navigator.language, { month: 'long' })})</h1>
-	<h2>{range.start} - {range.end}</h2>
-	<button onclick={previous}>Previous</button>
-	<button onclick={next}>Next</button>
+	<p>
+		{range.start.toLocaleDateString(navigator.language, { month: '2-digit', day: '2-digit' })} - {range.end.toLocaleDateString(
+			navigator.language,
+			{ month: '2-digit', day: '2-digit' }
+		)}
+	</p>
+	<div>
+		<button onclick={previous}>Previous</button>
+		<button onclick={next}>Next</button>
+	</div>
 
 	<article>
 		{#await todos}
@@ -50,7 +57,6 @@
 		{:then todos}
 			<TodoView {todos} />
 		{:catch error}
-			<!-- promise was rejected -->
 			<p>Something went wrong: {error.message}</p>
 		{/await}
 	</article>

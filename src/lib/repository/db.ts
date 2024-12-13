@@ -10,6 +10,7 @@ import {
 	type QueryResult
 } from '@evolu/common';
 import { createEvolu } from '@evolu/common-web';
+import { PUBLIC_SYNC_URL } from '$env/static/public';
 
 type NullableExceptIdCreatedAtUpdatedAt<T> = {
 	readonly [K in keyof T]: K extends 'id' | 'createdAt' | 'updatedAt' ? T[K] : T[K] | null;
@@ -38,7 +39,7 @@ export type TodoRows = QueryResult<NullableExceptIdCreatedAtUpdatedAt<TodoTable>
 
 export type TodoRow = TodoRows['row'];
 
-export const db = createEvolu(Database);
+export const db = createEvolu(Database, { syncUrl: PUBLIC_SYNC_URL });
 export const allTodos = ({ start, end }: { start: Date; end: Date }) =>
 	db.createQuery((db) =>
 		db
