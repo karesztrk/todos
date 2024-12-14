@@ -25,7 +25,7 @@
 	{#each viewState.weekDays as { d, date, name, today }}
 		<div>
 			<TodoList active={today}>
-				{#snippet header()}<div>{date}</div>
+				{#snippet header()}<div class="bold">{date}</div>
 					{name}{/snippet}
 				{#each viewState.list(d) as todo}
 					<Todo {todo} />
@@ -48,13 +48,15 @@
 <style>
 	t-view {
 		--max-row-height: 30px;
-		--min-height: 50vh;
+		--min-height: 80dvh;
 		--columns: 6;
 		--active-color: hotpink;
 		min-block-size: var(--min-height);
 		display: grid;
 		grid-template-columns: repeat(var(--columns), 1fr);
+		grid-template-rows: repeat(auto-fill, minmax(calc(var(--max-row-height) * 5), 1fr));
 		column-gap: 2rem;
+		row-gap: var(--max-row-height);
 
 		input[type='text'] {
 			width: 100%;
@@ -75,7 +77,7 @@
 
 			&:last-child {
 				grid-column: 1 / span 2;
-				grid-row: 3 / span 1;
+				grid-row: 3 / span 2;
 			}
 		}
 	}

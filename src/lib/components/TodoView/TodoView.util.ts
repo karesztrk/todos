@@ -1,5 +1,5 @@
 export const getFirstDayOfWeek = (): number => {
-	const userLocale = navigator.language;
+	const userLocale = 'en';
 	let firstDay: number;
 
 	try {

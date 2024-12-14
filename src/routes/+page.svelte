@@ -39,17 +39,13 @@
 </svelte:head>
 
 <section>
-	<h1>Todos ({now.toLocaleDateString(navigator.language, { month: 'long' })})</h1>
-	<p>
-		{range.start.toLocaleDateString(navigator.language, { month: '2-digit', day: '2-digit' })} - {range.end.toLocaleDateString(
-			navigator.language,
-			{ month: '2-digit', day: '2-digit' }
-		)}
-	</p>
-	<div>
-		<button onclick={previous}>Previous</button>
-		<button onclick={next}>Next</button>
-	</div>
+	<hrgroup>
+		<h1>Todos ({range.start.toLocaleDateString('en', { month: 'long' })})</h1>
+		<div>
+			<button onclick={previous}>Prev</button>
+			<button onclick={next}>Next</button>
+		</div>
+	</hrgroup>
 
 	<article>
 		{#await todos}
@@ -63,4 +59,15 @@
 </section>
 
 <style>
+	section {
+		hrgroup {
+			margin-block-start: 20px;
+			margin-block-end: 2rem;
+
+			display: flex;
+			flex-flow: row nowrap;
+			justify-content: space-between;
+			align-items: center;
+		}
+	}
 </style>

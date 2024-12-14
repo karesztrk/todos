@@ -3,11 +3,16 @@
 @layer reset, base, typography, theme, components, utilities, animations, viewtransition, customproperty, scrollanimation;
 
 :root {
-	--gap: clamp(1rem, 1vw, 2rem);
+	--gap: clamp(2rem, 1vw, 3rem);
 	--full: minmax(var(--gap), 1fr);
 	--content: calc(100% - var(--gap) * 2);
 
 	color-scheme: dark light;
+
+	background-color: var(--color-background);
+	color: var(--color-text);
+
+	--font-base: 'Merriweather', serif;
 }
 
 @layer base {
@@ -18,5 +23,62 @@
 			[full-start] var(--full) [content-start] var(--content)
 			[content-end] var(--full) [full-end];
 		grid-template-rows: var(--header-height) 1fr;
+	}
+}
+
+@layer components {
+	button {
+		--_color-button-bg: var(--color-button-default-bg);
+		--_color-button-text: var(--color-button-default-text);
+
+		border: 0;
+		padding: 0.25em 1.375em;
+		color: var(--_color-button-text);
+		background-color: var(--_color-button-bg);
+		border-radius: 6px;
+		line-height: 1.2;
+	}
+}
+
+@layer typography {
+	body {
+		font-synthesis: none;
+		text-rendering: optimizeLegibility;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		font-family: var(--font-base);
+		font-size: 1rem;
+		line-height: 1.75;
+	}
+
+	h1,
+	h2,
+	h3,
+	h4,
+	h5 {
+		font-weight: 700;
+		line-height: 1.1;
+		/* Better matching to fallback font */
+		font-size-adjust: 0.53;
+	}
+
+	h1 {
+		font-size: 2.5rem;
+	}
+}
+
+@layer utilities {
+	.bold {
+		font-weight: 700;
+	}
+}
+
+@layer theme {
+	:root {
+		--color-background: #11181c;
+		--color-text: #fff;
+
+		--color-button-default-text: #000;
+		--color-button-default-bg: #d9d9d9;
 	}
 }

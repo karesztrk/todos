@@ -27,6 +27,7 @@
 			display: flex;
 			justify-content: space-between;
 			border-block-end: 1px solid #fff;
+			font-size: 1.25rem;
 		}
 
 		&[active] {

@@ -1,11 +1,11 @@
-import { DAY, isToday, startOfWeek, weekDays } from './TodoView.util';
+import { isToday, startOfWeek, weekDays } from './TodoView.util';
 import type { TodoRow, TodoRows } from '$lib/repository/db';
-const dateFormatter = new Intl.DateTimeFormat(navigator.language, {
+const dateFormatter = new Intl.DateTimeFormat('en', {
 	month: '2-digit',
 	day: '2-digit'
 });
 
-const dayFormatter = new Intl.DateTimeFormat(navigator.language, {
+const dayFormatter = new Intl.DateTimeFormat('en', {
 	weekday: 'short'
 });
 
