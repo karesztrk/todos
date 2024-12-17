@@ -26,7 +26,7 @@
 		<div>
 			<TodoList active={today}>
 				{#snippet header()}<div class="bold">{date}</div>
-					{name}{/snippet}
+					<div class="light">{name}</div>{/snippet}
 				{#each viewState.list(d) as todo}
 					<Todo {todo} />
 				{/each}
@@ -36,7 +36,7 @@
 	{/each}
 	<div>
 		<TodoList class="someday">
-			{#snippet header()}Someday{/snippet}
+			{#snippet header()}<div class="bold">Someday</div>{/snippet}
 			{#each viewState.list() as todo}
 				<Todo {todo} />
 			{/each}
@@ -47,26 +47,29 @@
 
 <style>
 	t-view {
-		--max-row-height: 30px;
+		--row-height: calc(30px + 1rem);
 		--min-height: 80dvh;
 		--columns: 6;
 		--active-color: hotpink;
 		min-block-size: var(--min-height);
 		display: grid;
 		grid-template-columns: repeat(var(--columns), 1fr);
-		grid-template-rows: repeat(auto-fill, minmax(calc(var(--max-row-height) * 5), 1fr));
+		grid-template-rows: repeat(auto-fill, minmax(calc(var(--row-height) * 5), 1fr));
 		column-gap: 2rem;
-		row-gap: var(--max-row-height);
+		row-gap: var(--row-height);
 
 		input[type='text'] {
 			width: 100%;
-			height: var(--max-row-height);
+			height: var(--row-height);
+			background: none;
+			border: none;
+			outline-offset: var(--outline-offset);
 		}
 
 		& > div {
 			background: repeating-linear-gradient(
-				transparent 0 calc(var(--max-row-height) - 1px),
-				rgba(255, 255, 255, 0.25) calc(var(--max-row-height) - 1px) var(--max-row-height)
+				transparent 0 calc(var(--row-height) - 1px),
+				rgba(255, 255, 255, 0.25) calc(var(--row-height) - 1px) var(--row-height)
 			);
 			grid-row: 1 / span 2;
 

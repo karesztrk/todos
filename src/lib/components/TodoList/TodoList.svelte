@@ -22,16 +22,19 @@
 		height: 100%;
 		display: grid;
 		grid-template-columns: 1fr;
-		grid-auto-rows: var(--max-row-height);
+		grid-auto-rows: var(--row-height);
+
+		&[active] {
+			t-header {
+				color: var(--active-color);
+			}
+		}
+
 		t-header {
 			display: flex;
 			justify-content: space-between;
-			border-block-end: 1px solid #fff;
+			border-block-end: 1px solid var(--color-border);
 			font-size: 1.25rem;
-		}
-
-		&[active] {
-			color: var(--active-color);
 		}
 	}
 </style>

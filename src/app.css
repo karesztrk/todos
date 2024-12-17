@@ -12,7 +12,20 @@
 	background-color: var(--color-background);
 	color: var(--color-text);
 
-	--font-base: 'Merriweather', serif;
+	--outline: 2px solid currentColor;
+	--outline-offset: 2px;
+
+	--font-base: 'BespokeSerif', serif;
+
+	--bespoke-serif-variable-light-aalt: 'aalt' off;
+	--bespoke-serif-variable-light-frac: 'frac' off;
+	--bespoke-serif-variable-light-ordn: 'ordn' off;
+	--bespoke-serif-variable-light-salt: 'salt' off;
+	--bespoke-serif-variable-light-sups: 'sups' off;
+
+	font-feature-settings: var(--bespoke-serif-variable-light-aalt),
+		var(--bespoke-serif-variable-light-frac), var(--bespoke-serif-variable-light-ordn),
+		var(--bespoke-serif-variable-light-salt), var(--bespoke-serif-variable-light-sups);
 }
 
 @layer base {
@@ -37,6 +50,52 @@
 		background-color: var(--_color-button-bg);
 		border-radius: 6px;
 		line-height: 1.2;
+
+		&:focus-visible {
+			outline: 2px solid var(--_color-button-bg);
+			outline-offset: var(--outline-offset);
+		}
+	}
+
+	input {
+		&:focus-visible {
+			outline: 2px solid currentColor;
+			outline-offset: var(--outline-offset);
+		}
+
+		&[type='checkbox'] {
+			appearance: none;
+			/* For iOS < 15 */
+			background-color: var(--color-background);
+			/* Not removed via appearance */
+			margin: 0;
+
+			font: inherit;
+			color: currentColor;
+			width: 1.125em;
+			height: 1.125em;
+			border: 0.15em solid currentColor;
+			border-radius: 0.25em;
+
+			display: grid;
+			place-content: center;
+
+			&:before {
+				content: '';
+				width: 0.65em;
+				height: 0.65em;
+				clip-path: polygon(22% 48%, 14% 59%, 46% 84%, 90% 30%, 78% 20%, 44% 63%);
+				/* Windows High Contrast Mode */
+				background-color: CanvasText;
+			}
+
+			&:checked {
+				background-color: var(--color-muted);
+				&:before {
+					background-color: var(--color-background);
+				}
+			}
+		}
 	}
 }
 
@@ -71,14 +130,25 @@
 	.bold {
 		font-weight: 700;
 	}
+
+	.light {
+		font-weight: 300;
+	}
 }
 
 @layer theme {
 	:root {
+		--color-active: #fff;
+		--color-muted: #4c5255;
+
 		--color-background: #11181c;
-		--color-text: #fff;
+		--color-text: var(--color-active);
+		--color-text-muted: var(--color-muted);
 
 		--color-button-default-text: #000;
 		--color-button-default-bg: #d9d9d9;
+
+		--color-border: var(--color-active);
+		--color-border-muted: var(--color-muted);
 	}
 }
