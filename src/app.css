@@ -26,6 +26,9 @@
 	font-feature-settings: var(--bespoke-serif-variable-light-aalt),
 		var(--bespoke-serif-variable-light-frac), var(--bespoke-serif-variable-light-ordn),
 		var(--bespoke-serif-variable-light-salt), var(--bespoke-serif-variable-light-sups);
+
+	--h1-base: 2rem;
+	--font-size-fluid: 1cqi;
 }
 
 @layer base {
@@ -122,7 +125,14 @@
 	}
 
 	h1 {
-		font-size: 2.5rem;
+		font-weight: 700;
+		--font-size-base: var(--h1-base);
+	}
+
+	@supports (font-size: 1cqi) {
+		:is(h1) {
+			font-size: calc(var(--font-size-base) + var(--font-size-fluid, 1cqi));
+		}
 	}
 }
 
@@ -139,14 +149,14 @@
 @layer theme {
 	:root {
 		--color-active: #fff;
-		--color-muted: #4c5255;
+		--color-muted: oklch(43.43% 0.009 229.04);
 
-		--color-background: #11181c;
+		--color-background: oklch(20.38% 0.013 233.32);
 		--color-text: var(--color-active);
 		--color-text-muted: var(--color-muted);
 
 		--color-button-default-text: #000;
-		--color-button-default-bg: #d9d9d9;
+		--color-button-default-bg: oklch(88.53% 0 0);
 
 		--color-border: var(--color-active);
 		--color-border-muted: var(--color-muted);

@@ -65,9 +65,10 @@
 			margin-block-end: 2rem;
 
 			display: flex;
-			flex-flow: row nowrap;
+			flex-flow: row wrap;
 			justify-content: space-between;
 			align-items: center;
+			gap: 1rem;
 		}
 	}
 </style>

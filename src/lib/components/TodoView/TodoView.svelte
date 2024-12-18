@@ -48,15 +48,33 @@
 <style>
 	t-view {
 		--row-height: calc(30px + 1rem);
-		--min-height: 80dvh;
-		--columns: 6;
-		--active-color: hotpink;
-		min-block-size: var(--min-height);
+		--_min-height: 80dvh;
+		--_columns: 6;
+		--_break-point: 600px;
+		min-block-size: var(--_min-height);
 		display: grid;
-		grid-template-columns: repeat(var(--columns), 1fr);
+		grid-template-columns: 1fr;
 		grid-template-rows: repeat(auto-fill, minmax(calc(var(--row-height) * 5), 1fr));
 		column-gap: 2rem;
 		row-gap: var(--row-height);
+
+		@container main (width > 90ch) {
+			grid-template-columns: repeat(var(--_columns), 1fr);
+
+			& > div {
+				grid-row: 1 / span 2;
+
+				&:nth-child(n + 6),
+				&:nth-child(n + 7) {
+					grid-row: span 1;
+				}
+
+				&:last-child {
+					grid-column: 1 / span 2;
+					grid-row: 3 / span 2;
+				}
+			}
+		}
 
 		input[type='text'] {
 			width: 100%;
@@ -71,17 +89,6 @@
 				transparent 0 calc(var(--row-height) - 1px),
 				rgba(255, 255, 255, 0.25) calc(var(--row-height) - 1px) var(--row-height)
 			);
-			grid-row: 1 / span 2;
-
-			&:nth-child(n + 6),
-			&:nth-child(n + 7) {
-				grid-row: span 1;
-			}
-
-			&:last-child {
-				grid-column: 1 / span 2;
-				grid-row: 3 / span 2;
-			}
 		}
 	}
 </style>
