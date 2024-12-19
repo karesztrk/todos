@@ -8,18 +8,12 @@ importers:
 
   .:
     dependencies:
-      '@effect/schema':
-        specifier: ^0.75.5
-        version: 0.75.5(effect@3.10.4)
-      '@evolu/common':
-        specifier: ^5.4.8
-        version: 5.4.8(@effect/platform@0.69.9(effect@3.10.4))(@effect/schema@0.75.5(effect@3.10.4))(effect@3.10.4)
-      '@evolu/common-web':
-        specifier: ^8.2.4
-        version: 8.2.4(@evolu/common@5.4.8(@effect/platform@0.69.9(effect@3.10.4))(@effect/schema@0.75.5(effect@3.10.4))(effect@3.10.4))(@sqlite.org/sqlite-wasm@3.47.0-build1)
-      effect:
-        specifier: 3.10.4
-        version: 3.10.4
+      jazz-svelte:
+        specifier: ^0.8.44
+        version: 0.8.44(svelte@5.2.11)
+      jazz-tools:
+        specifier: ^0.8.44
+        version: 0.8.44
     devDependencies:
       '@playwright/test':
         specifier: ^1.45.3
@@ -78,16 +72,6 @@ packages:
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
-
-  '@effect/platform@0.69.9':
-    resolution: {integrity: sha512-gdp5rLxKLBBI895ycBRkuwCQHnYf8g6+Sdg5tFhuH+axIdgP4J8dGzIvYBGAkRMw/4k2BYeSKKf8ZONYnNWcWg==}
-    peerDependencies:
-      effect: ^3.10.4
-
-  '@effect/schema@0.75.5':
-    resolution: {integrity: sha512-TQInulTVCuF+9EIbJpyLP6dvxbQJMphrnRqgexm/Ze39rSjfhJuufF7XvU3SxTgg3HnL7B/kpORTJbHhlE6thw==}
-    peerDependencies:
-      effect: ^3.9.2
 
   '@esbuild/aix-ppc64@0.21.5':
     resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
@@ -261,20 +245,17 @@ packages:
     resolution: {integrity: sha512-2b/g5hRmpbb1o4GnTZax9N9m0FXzz9OV42ZzI4rDDMDuHUqigAiQCEWChBWCY4ztAGVRjoWT19v0yMmc5/L5kA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@evolu/common-web@8.2.4':
-    resolution: {integrity: sha512-cJysrRU7stGRa+zjtSICcngiRX1t1wM8Bvmoav31vEXifMsAK92N8ADQfxqUzebguajnYzcCrwa5vm0afELIOA==}
-    engines: {node: '>=20.0.0'}
-    peerDependencies:
-      '@evolu/common': ^5.4.8
-      '@sqlite.org/sqlite-wasm': ^3.47.0-build1
+  '@hazae41/berith@1.2.6':
+    resolution: {integrity: sha512-TQLkisoolGD2kdSQVtTVXNwmsotA9dLmUgXcpHTNzssmN11Mp+vHVf4Myn3+Q4U18Na3UzGi6DZqogZFqjPPvg==}
 
-  '@evolu/common@5.4.8':
-    resolution: {integrity: sha512-ut0fTMdjGAjdJBmlPxCmcjcCCPmaaM72WHEyJatOaCjyWq7Zn6R1JSaDdePIt9+mkXlfytNBtq4MsBlVQ1qFaA==}
-    engines: {node: '>=20.0.0'}
-    peerDependencies:
-      '@effect/platform': 0.69.9
-      '@effect/schema': 0.75.5
-      effect: 3.10.4
+  '@hazae41/box@1.0.14':
+    resolution: {integrity: sha512-RevIMZBVRmp0BDkpBpL77sr3Rk7XdqzBZcw+UsfUT4JAly/sryM/NDzJa80sMyO6aERJkjHUQaxH5DYDznPhkw==}
+
+  '@hazae41/option@1.1.4':
+    resolution: {integrity: sha512-ZGAVkOJJw2YIeihG8PaWs4R3KDloCgWGNDPqbATvT3kTtoyU+dJmya/UCM2P+ZwCfWYpE7nGiYJbBTlpp929Qg==}
+
+  '@hazae41/result@1.3.2':
+    resolution: {integrity: sha512-X2RdjCC4DypMZFN3aZ7P5Zh8kEMN6SEqcMARRa/CraEU7Es/hj0yBh1Pt5eAYrRkpnWiE9+ohKSU4s7nL5L1gg==}
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -314,8 +295,15 @@ packages:
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
 
-  '@noble/ciphers@1.1.3':
-    resolution: {integrity: sha512-Ygv6WnWJHLLiW4fnNDC1z+i13bud+enXOFRBlpxI+NJliPWx5wdR+oWlTjLuBPTqjUjtHXtjkU6w3kuuH6upZA==}
+  '@noble/ciphers@0.1.4':
+    resolution: {integrity: sha512-d3ZR8vGSpy3v/nllS+bD/OMN5UZqusWiQqkyj7AwzTnhXFH72pF5oB4Ach6DQ50g5kXxC28LdaYBEpsyv9KOUQ==}
+
+  '@noble/curves@1.7.0':
+    resolution: {integrity: sha512-UTMhXK9SeDhFJVrHeUJ5uZlI6ajXg10O6Ddocf9S6GjbSBVZsJo88HzKwXznNfGpMTRDyJkqMjNDPYgf0qFWnw==}
+    engines: {node: ^14.21.3 || >=16}
+
+  '@noble/hashes@1.6.0':
+    resolution: {integrity: sha512-YUULf0Uk4/mAA89w+k3+yUYh6NrEvxZa5T6SY3wlMvE2chHkxFUUIDI8/XW1QSC357iA5pSnqt7XEhvFOqmDyQ==}
     engines: {node: ^14.21.3 || >=16}
 
   '@noble/hashes@1.6.1':
@@ -334,6 +322,10 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
+  '@opentelemetry/api@1.9.0':
+    resolution: {integrity: sha512-3giAOQvZiH5F9bMlMiv8+GSPMeqg0dbaeo58/0SlA9sxSqZhnUtxzX9/2FzyhS9sWQf5S0GJE0AKBrFqjpeYcg==}
+    engines: {node: '>=8.0.0'}
+
   '@playwright/test@1.49.0':
     resolution: {integrity: sha512-DMulbwQURa8rNIQrf94+jPJQ4FmOVdpE5ZppRNvWVjvhC+6sOeo28r8MgIpQRYouXRtt/FCCXU7zn20jnHR4Qw==}
     engines: {node: '>=18'}
@@ -341,9 +333,6 @@ packages:
 
   '@polka/url@1.0.0-next.28':
     resolution: {integrity: sha512-8LduaNlMZGwdZ6qWrKlfa+2M4gahzFkprZiAt2TF8uS0qQgBizKXpXURqvTJ4WtmupWxaLqjRb2UCTe72mu+Aw==}
-
-  '@protobuf-ts/runtime@2.9.4':
-    resolution: {integrity: sha512-vHRFWtJJB/SiogWDF0ypoKfRIZ41Kq+G9cEFj6Qm1eQaAhJ1LDFvgZ7Ja4tb3iLOQhz0PaoPnnOijF1qmEqTxg==}
 
   '@rollup/rollup-android-arm-eabi@4.27.4':
     resolution: {integrity: sha512-2Y3JT6f5MrQkICUyRVCw4oa0sutfAsgaSsb0Lmmy1Wi2y7X5vT9Euqw4gOsCyy0YfKURBg35nhUKZS4mDcfULw==}
@@ -440,10 +429,6 @@ packages:
 
   '@scure/bip39@1.5.0':
     resolution: {integrity: sha512-Dop+ASYhnrwm9+HA/HwXg7j2ZqM6yk2fyLWb5znexjctFY3+E+eU8cIWI0Pql0Qx4hPZCijlGq4OL71g+Uz30A==}
-
-  '@sqlite.org/sqlite-wasm@3.47.0-build1':
-    resolution: {integrity: sha512-n2lLez+PwcN+WQdgRIm6OCaGvQUHOx+kEmlL7pq0G4xuK+NaKxnbF4wI6XhfZ4HbyG2sla1Qt4ImaD6hpwoMtg==}
-    hasBin: true
 
   '@sveltejs/adapter-auto@3.3.1':
     resolution: {integrity: sha512-5Sc7WAxYdL6q9j/+D0jJKjGREGlfIevDyHSQ2eNETHcB1TKlQWHcAo8AS8H1QdjNvSXpvOwNjykDUHPEAyGgdQ==}
@@ -611,6 +596,18 @@ packages:
     resolution: {integrity: sha512-n8enUVCED/KVRQlab1hr3MVpcVMvxtZjmEa956u+4YijlmQED223XMSYj2tLuKvr4jcCTzNNMpQDUer72MMmzA==}
     engines: {node: '>= 14.16.0'}
 
+  cojson-storage-indexeddb@0.8.44:
+    resolution: {integrity: sha512-Td4ORaj+fedHu6anrcsN/nBnNsGcREpp8okyo65o+vmatZ+IofpPBRKH3Elt/9+x3Un8popSPJF6kXwfV5BGHw==}
+
+  cojson-storage@0.8.44:
+    resolution: {integrity: sha512-Prl1c84P6co1cQfldxycqkafguaR8Rs7CCfhzg6ffVOmNy/A/oydO/xTKIGchFzSZxL+MT2/x6FHwn+/KNbXxg==}
+
+  cojson-transport-ws@0.8.44:
+    resolution: {integrity: sha512-5a0fqDv+0tvD/Y+QqLEmSq47elMf/YvTA2sQD3a0wuzmU7eZzrhg3eIABGsgPwonPPOxTukkL46kbz7uiOtlfg==}
+
+  cojson@0.8.44:
+    resolution: {integrity: sha512-gYGl5q4Vpoeg1pyCPIWys/W7S0X+x+D1MJQxFAcujveLsfWPOyW76ZT5OqP2ao0wiAq0J8MtuOsepEhDP7ZWYw==}
+
   color-convert@2.0.1:
     resolution: {integrity: sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==}
     engines: {node: '>=7.0.0'}
@@ -657,9 +654,6 @@ packages:
 
   devalue@5.1.1:
     resolution: {integrity: sha512-maua5KUiapvEwiEAe+XnlZ3Rh0GD+qI1J/nb9vrJc3muPXvcF/8gXYTWF76+5DAqHyDUtOIImEuo0YKE9mshVw==}
-
-  effect@3.10.4:
-    resolution: {integrity: sha512-D7Mryq8jylT0fIGrgXEn2TublO/BhduRwzlqV5z1l/QFY6grs7UOyyomlAOFMK9ArSYiLgrOSMQ/Cr/cIOeU2Q==}
 
   electron-to-chromium@1.5.67:
     resolution: {integrity: sha512-nz88NNBsD7kQSAGGJyp8hS6xSPtWwqNogA0mjtc2nUYeEf3nURK9qpV18TuBdDmEDgVWotS8Wkzf+V52dSQ/LQ==}
@@ -772,6 +766,9 @@ packages:
   fast-levenshtein@2.0.6:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
 
+  fast-list@1.0.3:
+    resolution: {integrity: sha512-Lm56Ci3EqefHNdIneRFuzhpPcpVVBz9fgqVmG3UQIxAefJv1mEYsZ1WQLTWqmdqeGEwbI2t6fbZgp9TqTYARuA==}
+
   fastq@1.17.1:
     resolution: {integrity: sha512-sRVD3lWVIXWg6By68ZN7vho9a1pQcN/WBFaAAsDDFzlJjvoGx0P8z7V1t72grFJfJhu3YPZBuu25f7Kaw2jN1w==}
 
@@ -790,9 +787,6 @@ packages:
   fill-range@7.1.1:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
     engines: {node: '>=8'}
-
-  find-my-way-ts@0.1.5:
-    resolution: {integrity: sha512-4GOTMrpGQVzsCH2ruUn2vmwzV/02zF4q+ybhCIrw/Rkt3L8KWcycdC6aJMctJzwN4fXD4SD5F/4B9Sksh5rE0A==}
 
   find-up@5.0.0:
     resolution: {integrity: sha512-78/PXT1wlLLDgTzDs7sjq9hzz0vXD+zn+7wypEe4fXQxCmdmqfGsEPQxmiCSQI3ajFV91bVSsvNtrJRiW6nGng==}
@@ -844,6 +838,9 @@ packages:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
 
+  hash-wasm@4.12.0:
+    resolution: {integrity: sha512-+/2B2rYLb48I/evdOIhP+K/DD2ca2fgBjp6O+GBEnCDk2e4rpeXIK8GvIyRPjTezgmWn9gmKwkQjjx6BtqDHVQ==}
+
   ignore@5.3.2:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
     engines: {node: '>= 4'}
@@ -877,6 +874,17 @@ packages:
   isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
 
+  jazz-browser@0.8.44:
+    resolution: {integrity: sha512-hzRMwmQKsN1OLCZ5O84sr6dAiHle88wmYvJgqcBjGotbiyhD6hAwZSdPqHqIh20zklDPx6Ptg4GbO7WhJDGaCw==}
+
+  jazz-svelte@0.8.44:
+    resolution: {integrity: sha512-iJzvRhb+Z0w2kUAkbJJ0Pu20pFbo5m7a8OouYHOEVJg+yRUXgWIw1hpUGV9zc0obgyJCiOA8iqqN1ZSkcwTIJw==}
+    peerDependencies:
+      svelte: ^5.0.0
+
+  jazz-tools@0.8.44:
+    resolution: {integrity: sha512-fFRY3rDCflfKg5fq7ECycMrOkIt8x7bamPovNpWQd2QOSWv/BhXcU2gpRHc89HwwHuAB/zmvMCRpMCfKa18cng==}
+
   js-yaml@4.1.0:
     resolution: {integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==}
     hasBin: true
@@ -899,10 +907,6 @@ packages:
 
   known-css-properties@0.35.0:
     resolution: {integrity: sha512-a/RAk2BfKk+WFGhhOCAYqSiFLc34k8Mt/6NWRI4joER0EYUzXIcFivjjnoD3+XU1DggLn/tZc3DOAgke7l8a4A==}
-
-  kysely@0.27.5:
-    resolution: {integrity: sha512-s7hZHcQeSNKpzCkHRm8yA+0JPLjncSWnjb+2TIElwS2JAqYr+Kv3Ess+9KFfJS0C1xcQ1i9NkNHpWwCYpHMWsA==}
-    engines: {node: '>=14.0.0'}
 
   levn@0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
@@ -1015,21 +1019,17 @@ packages:
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
-  multipasta@0.2.5:
-    resolution: {integrity: sha512-c8eMDb1WwZcE02WVjHoOmUVk7fnKU/RmUcosHACglrWAuPQsEJv+E8430sXj6jNc1jHw0zrS16aCjQh4BcEb4A==}
-
   nanoid@3.3.8:
     resolution: {integrity: sha512-WNLf5Sd8oZxOm+TzppcYk8gVOgP+l58xNy58D0nbUnOxOWRWvlcCV4kUF7ltmI6PsrLl/BgKEyS4mqsGChFN0w==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  nanoid@5.0.9:
-    resolution: {integrity: sha512-Aooyr6MXU6HpvvWXKoVoXwKMs/KyVakWwg7xQfv5/S/RIgJMy0Ifa45H9qqYy7pTCszrHzP21Uk4PZq2HpEM8Q==}
-    engines: {node: ^18 || >=20}
-    hasBin: true
-
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
+
+  neverthrow@7.2.0:
+    resolution: {integrity: sha512-iGBUfFB7yPczHHtA8dksKTJ9E8TESNTAx1UQWW6TzMF280vo9jdPYpLUXrMN1BCkPdHFdNG3fxOt2CUad8KhAw==}
+    engines: {node: '>=18'}
 
   node-releases@2.0.18:
     resolution: {integrity: sha512-d9VeXT4SJ7ZeOqGX6R5EM022wpL+eWPooLI+5UpWn2jCT1aosUQEhQP214x33Wkwx3JQMvIm+tIoVOdodFS40g==}
@@ -1131,6 +1131,10 @@ packages:
 
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
+
+  queueueue@4.1.2:
+    resolution: {integrity: sha512-YNOihQyk72FRrGQP+fVjUDVCSgxtHS5EdfgXjCYwPCTyhVWXriHfUt0XK0eT7vcBX0m91g0e0KVO8CxoNLh60g==}
+    engines: {node: '>=18'}
 
   readdirp@4.0.2:
     resolution: {integrity: sha512-yDMz9g+VaZkqBYS/ozoBJwaBhTbZo3UNYQHNRw1D3UFQB8oHB4uS/tAODO+ZLjGWmUbKnIlOWO+aaIiAxrUWHA==}
@@ -1240,6 +1244,11 @@ packages:
       typescript:
         optional: true
 
+  typescript@5.6.3:
+    resolution: {integrity: sha512-hjcS1mhfuyi4WW8IWtjP7brDrG2cuDZukyrYrSauoXGNgx0S7zceP07adYkJycEr56BOUTNPzbInooiN3fn1qw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
   typescript@5.7.2:
     resolution: {integrity: sha512-i5t66RHxDvVN40HfDd1PsEThGNnlMCMT3jMUuoh9/0TaqWevNontacunWyN02LA9/fIbEWlcHZcgTKb9QoaLfg==}
     engines: {node: '>=14.17'}
@@ -1322,17 +1331,6 @@ snapshots:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
-
-  '@effect/platform@0.69.9(effect@3.10.4)':
-    dependencies:
-      effect: 3.10.4
-      find-my-way-ts: 0.1.5
-      multipasta: 0.2.5
-
-  '@effect/schema@0.75.5(effect@3.10.4)':
-    dependencies:
-      effect: 3.10.4
-      fast-check: 3.23.1
 
   '@esbuild/aix-ppc64@0.21.5':
     optional: true
@@ -1442,22 +1440,21 @@ snapshots:
     dependencies:
       levn: 0.4.1
 
-  '@evolu/common-web@8.2.4(@evolu/common@5.4.8(@effect/platform@0.69.9(effect@3.10.4))(@effect/schema@0.75.5(effect@3.10.4))(effect@3.10.4))(@sqlite.org/sqlite-wasm@3.47.0-build1)':
+  '@hazae41/berith@1.2.6':
     dependencies:
-      '@evolu/common': 5.4.8(@effect/platform@0.69.9(effect@3.10.4))(@effect/schema@0.75.5(effect@3.10.4))(effect@3.10.4)
-      '@sqlite.org/sqlite-wasm': 3.47.0-build1
+      '@hazae41/box': 1.0.14
 
-  '@evolu/common@5.4.8(@effect/platform@0.69.9(effect@3.10.4))(@effect/schema@0.75.5(effect@3.10.4))(effect@3.10.4)':
+  '@hazae41/box@1.0.14':
     dependencies:
-      '@effect/platform': 0.69.9(effect@3.10.4)
-      '@effect/schema': 0.75.5(effect@3.10.4)
-      '@noble/ciphers': 1.1.3
-      '@noble/hashes': 1.6.1
-      '@protobuf-ts/runtime': 2.9.4
-      '@scure/bip39': 1.5.0
-      effect: 3.10.4
-      kysely: 0.27.5
-      nanoid: 5.0.9
+      '@hazae41/result': 1.3.2
+
+  '@hazae41/option@1.1.4':
+    dependencies:
+      '@hazae41/result': 1.3.2
+
+  '@hazae41/result@1.3.2':
+    dependencies:
+      '@hazae41/option': 1.1.4
 
   '@humanfs/core@0.19.1': {}
 
@@ -1489,7 +1486,13 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  '@noble/ciphers@1.1.3': {}
+  '@noble/ciphers@0.1.4': {}
+
+  '@noble/curves@1.7.0':
+    dependencies:
+      '@noble/hashes': 1.6.0
+
+  '@noble/hashes@1.6.0': {}
 
   '@noble/hashes@1.6.1': {}
 
@@ -1505,13 +1508,13 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.17.1
 
+  '@opentelemetry/api@1.9.0': {}
+
   '@playwright/test@1.49.0':
     dependencies:
       playwright: 1.49.0
 
   '@polka/url@1.0.0-next.28': {}
-
-  '@protobuf-ts/runtime@2.9.4': {}
 
   '@rollup/rollup-android-arm-eabi@4.27.4':
     optional: true
@@ -1573,8 +1576,6 @@ snapshots:
     dependencies:
       '@noble/hashes': 1.6.1
       '@scure/base': 1.2.1
-
-  '@sqlite.org/sqlite-wasm@3.47.0-build1': {}
 
   '@sveltejs/adapter-auto@3.3.1(@sveltejs/kit@2.9.0(@sveltejs/vite-plugin-svelte@4.0.2(svelte@5.2.11)(vite@5.4.11(lightningcss@1.28.2)))(svelte@5.2.11)(vite@5.4.11(lightningcss@1.28.2)))':
     dependencies:
@@ -1771,6 +1772,32 @@ snapshots:
     dependencies:
       readdirp: 4.0.2
 
+  cojson-storage-indexeddb@0.8.44:
+    dependencies:
+      cojson: 0.8.44
+      cojson-storage: 0.8.44
+
+  cojson-storage@0.8.44:
+    dependencies:
+      cojson: 0.8.44
+
+  cojson-transport-ws@0.8.44:
+    dependencies:
+      cojson: 0.8.44
+      typescript: 5.6.3
+
+  cojson@0.8.44:
+    dependencies:
+      '@hazae41/berith': 1.2.6
+      '@noble/ciphers': 0.1.4
+      '@noble/curves': 1.7.0
+      '@noble/hashes': 1.6.1
+      '@opentelemetry/api': 1.9.0
+      '@scure/base': 1.2.1
+      hash-wasm: 4.12.0
+      neverthrow: 7.2.0
+      queueueue: 4.1.2
+
   color-convert@2.0.1:
     dependencies:
       color-name: 1.1.4
@@ -1800,10 +1827,6 @@ snapshots:
   detect-libc@1.0.3: {}
 
   devalue@5.1.1: {}
-
-  effect@3.10.4:
-    dependencies:
-      fast-check: 3.23.1
 
   electron-to-chromium@1.5.67: {}
 
@@ -1967,6 +1990,8 @@ snapshots:
 
   fast-levenshtein@2.0.6: {}
 
+  fast-list@1.0.3: {}
+
   fastq@1.17.1:
     dependencies:
       reusify: 1.0.4
@@ -1980,8 +2005,6 @@ snapshots:
   fill-range@7.1.1:
     dependencies:
       to-regex-range: 5.0.1
-
-  find-my-way-ts@0.1.5: {}
 
   find-up@5.0.0:
     dependencies:
@@ -2021,6 +2044,8 @@ snapshots:
 
   has-flag@4.0.0: {}
 
+  hash-wasm@4.12.0: {}
+
   ignore@5.3.2: {}
 
   import-fresh@3.3.0:
@@ -2046,6 +2071,26 @@ snapshots:
 
   isexe@2.0.0: {}
 
+  jazz-browser@0.8.44:
+    dependencies:
+      '@scure/bip39': 1.5.0
+      cojson: 0.8.44
+      cojson-storage-indexeddb: 0.8.44
+      cojson-transport-ws: 0.8.44
+      jazz-tools: 0.8.44
+      typescript: 5.6.3
+
+  jazz-svelte@0.8.44(svelte@5.2.11):
+    dependencies:
+      jazz-browser: 0.8.44
+      jazz-tools: 0.8.44
+      svelte: 5.2.11
+
+  jazz-tools@0.8.44:
+    dependencies:
+      cojson: 0.8.44
+      fast-check: 3.23.1
+
   js-yaml@4.1.0:
     dependencies:
       argparse: 2.0.1
@@ -2063,8 +2108,6 @@ snapshots:
   kleur@4.1.5: {}
 
   known-css-properties@0.35.0: {}
-
-  kysely@0.27.5: {}
 
   levn@0.4.1:
     dependencies:
@@ -2151,13 +2194,11 @@ snapshots:
 
   ms@2.1.3: {}
 
-  multipasta@0.2.5: {}
-
   nanoid@3.3.8: {}
 
-  nanoid@5.0.9: {}
-
   natural-compare@1.4.0: {}
+
+  neverthrow@7.2.0: {}
 
   node-releases@2.0.18: {}
 
@@ -2238,6 +2279,10 @@ snapshots:
   pure-rand@6.1.0: {}
 
   queue-microtask@1.2.3: {}
+
+  queueueue@4.1.2:
+    dependencies:
+      fast-list: 1.0.3
 
   readdirp@4.0.2: {}
 
@@ -2368,6 +2413,8 @@ snapshots:
       typescript: 5.7.2
     transitivePeerDependencies:
       - supports-color
+
+  typescript@5.6.3: {}
 
   typescript@5.7.2: {}
 

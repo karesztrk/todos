@@ -37,9 +37,7 @@
 		"pnpm": "^9.0.0"
 	},
 	"dependencies": {
-		"@effect/schema": "^0.75.5",
-		"@evolu/common": "^5.4.8",
-		"@evolu/common-web": "^8.2.4",
-		"effect": "3.10.4"
+		"jazz-svelte": "^0.8.44",
+		"jazz-tools": "^0.8.44"
 	}
 }

@@ -1,35 +1,67 @@
 <script lang="ts">
 	import TodoView from '$lib/components/TodoView';
 	import { addDays, startOfWeek } from '$lib/components/TodoView/TodoView.util';
-	import { db, allTodos } from '$lib/repository/db';
+	import { useAccount, useCoState } from '$lib/repository/jazz';
+	import { ListOfTodos, Todo, TodoProject } from '$lib/repository/schema';
+	import { Group, type ID } from 'jazz-tools';
 
 	const now = new Date();
 
 	const start = startOfWeek(now);
 	const range = $state({ start, end: addDays(start, 6) });
+	const projectId = $state<ID<TodoProject> | undefined>();
 
-	let todos = $state(db.loadQuery(allTodos(range)));
+	let todos = $derived(useCoState(TodoProject, projectId));
+
+	const { me } = useAccount({
+		root: { projects: [{}] }
+	});
 
 	$effect(() => {
-		const unsubscribe = db.subscribeQuery(allTodos(range))(() => {
-			const result = db.getQuery(allTodos(range));
-			todos = Promise.resolve(result);
-		});
-		return () => {
-			unsubscribe();
-		};
+		// const unsubscribe = ListOfTodos.subscribe(allTodos(range))(() => {
+		// 	const result = db.getQuery(allTodos(range));
+		// 	todos = Promise.resolve(result);
+		// });
+		// const unsubscribe = ListOfTodos.subscribe(undefined, me, [], (updatedIssue) => {
+		// 	console.log(updatedIssue);
+		// });
+		// return () => {
+		// 	unsubscribe();
+		// };
 	});
 
 	const next = () => {
 		range.start = addDays(range.start, 7);
 		range.end = addDays(range.end, 7);
-		todos = db.loadQuery(allTodos(range));
+		// 	todos = db.loadQuery(allTodos(range));
 	};
 
 	const previous = () => {
 		range.start = addDays(range.start, -7);
 		range.end = addDays(range.end, -7);
-		todos = db.loadQuery(allTodos(range));
+		// todos = db.loadQuery(allTodos(range));
+	};
+
+	const create = () => {
+		if (!me) return;
+
+		// To create a new todo project, we first create a `Group`,
+		// which is a scope for defining access rights (reader/writer/admin)
+		// of its members, which will apply to all CoValues owned by that group.
+		const projectGroup = Group.create({ owner: me });
+
+		// Then we create an empty todo project within that group
+		const project = TodoProject.create(
+			{
+				title: 'Demo',
+				todos: ListOfTodos.create([], { owner: projectGroup })
+			},
+			{ owner: projectGroup }
+		);
+
+		me.root?.projects?.push(project);
+
+		console.log(project.id);
 	};
 </script>
 
@@ -48,13 +80,10 @@
 	</hrgroup>
 
 	<article>
-		{#await todos}
-			<div>Loading...</div>
-		{:then todos}
-			<TodoView {todos} />
-		{:catch error}
-			<p>Something went wrong: {error.message}</p>
-		{/await}
+		<button onclick={create}>Create</button>
+		{#if todos.current}
+			<TodoView todos={todos.current} />
+		{/if}
 	</article>
 </section>
 

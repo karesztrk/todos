@@ -1,21 +1,21 @@
 <script lang="ts">
-	import { Either } from 'effect';
-	import * as S from '@effect/schema/Schema';
-	import { NonEmptyString1000 } from '@evolu/common';
-	import { db, type TodoRows } from '$lib/repository/db';
 	import TodoList from '$lib/components/TodoList';
 	import TodoViewState from './TodoViewState.svelte';
 	import Todo from '$lib/components/Todo';
+	import { Todo as TodoSchema } from '$lib/repository/schema';
+	import { useAccount } from '$lib/repository/jazz';
 
-	const { todos }: { todos: TodoRows } = $props();
+	const { todos }: { todos: any } = $props();
 
 	const viewState = $derived(new TodoViewState(todos));
 
+	const { me } = useAccount();
+
 	const onKeydown = (date?: Date) => (e: KeyboardEvent) => {
 		const target = e.target as HTMLInputElement;
-		const text = S.decodeUnknownEither(NonEmptyString1000)(target.value);
-		if (e.key === 'Enter' && Either.isRight(text)) {
-			db.create('todo', { done: false, text: text.right, date });
+		const text = target.value;
+		if (e.key === 'Enter' && text && me) {
+			TodoSchema.create({ done: false, text, date }, { owner: me });
 			target.value = '';
 		}
 	};

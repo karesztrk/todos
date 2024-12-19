@@ -1,8 +1,6 @@
 <script lang="ts">
-	import { db, type TodoRow } from '$lib/repository/db';
-
 	interface Props {
-		todo: TodoRow;
+		todo: any;
 	}
 	const { todo }: Props = $props();
 
@@ -13,7 +11,7 @@
 			return;
 		}
 		const done = e.currentTarget.checked;
-		db.update('todo', { id: todo.id, done });
+		// db.update('todo', { id: todo.id, done });
 	};
 </script>
 

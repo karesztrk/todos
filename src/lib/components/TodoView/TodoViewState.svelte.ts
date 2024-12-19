@@ -1,5 +1,4 @@
 import { isToday, startOfWeek, weekDays } from './TodoView.util';
-import type { TodoRow, TodoRows } from '$lib/repository/db';
 const dateFormatter = new Intl.DateTimeFormat('en', {
 	month: '2-digit',
 	day: '2-digit'
@@ -8,6 +7,9 @@ const dateFormatter = new Intl.DateTimeFormat('en', {
 const dayFormatter = new Intl.DateTimeFormat('en', {
 	weekday: 'short'
 });
+
+type TodoRow = any;
+type TodoRows = TodoRow[];
 
 export interface WeekDay {
 	d: Date;
@@ -19,7 +21,7 @@ export interface WeekDay {
 class TodoViewState {
 	todos: Map<string, TodoRow[]>;
 
-	constructor(todos: TodoRows) {
+	constructor(todos: TodoRows = []) {
 		this.todos = this.pushAll(new Map(), todos);
 	}
 
@@ -35,7 +37,7 @@ class TodoViewState {
 	}
 
 	pushAll(map: Map<string, TodoRow[]>, todos: TodoRows) {
-		for (const todo of todos.rows) {
+		for (const todo of todos) {
 			this.push(map, todo);
 		}
 		return map;
