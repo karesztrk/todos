@@ -1,35 +1,43 @@
 <script lang="ts">
 	import TodoView from '$lib/components/TodoView';
 	import { addDays, startOfWeek } from '$lib/components/TodoView/TodoView.util';
-	import { db, allTodos } from '$lib/repository/db';
+	import { allTodos, db, type TodoDocument } from '$lib/repository/db';
 
 	const now = new Date();
 
 	const start = startOfWeek(now);
 	const range = $state({ start, end: addDays(start, 6) });
 
-	let todos = $state(db.loadQuery(allTodos(range)));
+	const inRange = (todos: TodoDocument[]) =>
+		todos.filter(
+			(todo) =>
+				todo.date === null ||
+				(range.start.getTime() <= new Date(todo.date).getTime() &&
+					new Date(todo.date).getTime() <= range.end.getTime())
+		);
+
+	let todos = $state(db.todos.find(allTodos).exec().then(inRange));
 
 	$effect(() => {
-		const unsubscribe = db.subscribeQuery(allTodos(range))(() => {
-			const result = db.getQuery(allTodos(range));
-			todos = Promise.resolve(result);
+		const observable = db.todos.find(allTodos).$;
+		const subscription = observable.subscribe((update) => {
+			todos = Promise.resolve(inRange(update));
 		});
 		return () => {
-			unsubscribe();
+			subscription.unsubscribe();
 		};
 	});
 
 	const next = () => {
 		range.start = addDays(range.start, 7);
 		range.end = addDays(range.end, 7);
-		todos = db.loadQuery(allTodos(range));
+		todos = db.todos.find(allTodos).exec().then(inRange);
 	};
 
 	const previous = () => {
 		range.start = addDays(range.start, -7);
 		range.end = addDays(range.end, -7);
-		todos = db.loadQuery(allTodos(range));
+		todos = db.todos.find(allTodos).exec().then(inRange);
 	};
 </script>
 
@@ -51,7 +59,7 @@
 		{#await todos}
 			<div>Loading...</div>
 		{:then todos}
-			<TodoView {todos} />
+			<TodoView {todos} {range} />
 		{:catch error}
 			<p>Something went wrong: {error.message}</p>
 		{/await}

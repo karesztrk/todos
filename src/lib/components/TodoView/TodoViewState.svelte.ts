@@ -1,5 +1,5 @@
-import { isToday, startOfWeek, weekDays } from './TodoView.util';
-import type { TodoRow, TodoRows } from '$lib/repository/db';
+import { isToday, weekDays } from './TodoView.util';
+import type { TodoDocument } from '$lib/repository/db';
 const dateFormatter = new Intl.DateTimeFormat('en', {
 	month: '2-digit',
 	day: '2-digit'
@@ -17,16 +17,17 @@ export interface WeekDay {
 }
 
 class TodoViewState {
-	todos: Map<string, TodoRow[]>;
+	todos: Map<string, TodoDocument[]>;
 
-	constructor(todos: TodoRows) {
+	range: { start: Date; end: Date };
+
+	constructor(todos: TodoDocument[], range: { start: Date; end: Date }) {
 		this.todos = this.pushAll(new Map(), todos);
+		this.range = range;
 	}
 
 	get weekDays(): WeekDay[] {
-		const today = new Date();
-		const startDate = startOfWeek(today);
-		return weekDays(startDate).map((d) => ({
+		return weekDays(this.range.start).map((d) => ({
 			d,
 			date: dateFormatter.format(d),
 			name: dayFormatter.format(d),
@@ -34,22 +35,26 @@ class TodoViewState {
 		}));
 	}
 
-	pushAll(map: Map<string, TodoRow[]>, todos: TodoRows) {
-		for (const todo of todos.rows) {
+	pushAll(map: Map<string, TodoDocument[]>, todos: TodoDocument[]): Map<string, TodoDocument[]> {
+		for (const todo of todos) {
 			this.push(map, todo);
 		}
 		return map;
 	}
 
-	push(map: Map<string, TodoRow[]>, todo: TodoRow) {
+	push(map: Map<string, TodoDocument[]>, todo: TodoDocument): Map<string, TodoDocument[]> {
 		const key =
 			todo !== null && todo.date ? dateFormatter.format(new Date(todo.date as string)) : 'someday';
 		const todos = map.get(key) ?? [];
-		map.set(key, [...todos, todo]);
+		map.set(key, [...todos, todo].sort(this.sort));
 		return map;
 	}
 
-	list(date?: Date) {
+	sort(left: TodoDocument, right: TodoDocument): number {
+		return new Date(left.created).getTime() - new Date(right.created).getTime();
+	}
+
+	list(date?: Date): TodoDocument[] {
 		const key = date ? dateFormatter.format(date) : 'someday';
 		return this.todos.get(key) ?? [];
 	}

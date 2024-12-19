@@ -1,21 +1,25 @@
 <script lang="ts">
-	import { Either } from 'effect';
-	import * as S from '@effect/schema/Schema';
-	import { NonEmptyString1000 } from '@evolu/common';
-	import { db, type TodoRows } from '$lib/repository/db';
+	import { db, type TodoDocument } from '$lib/repository/db';
 	import TodoList from '$lib/components/TodoList';
 	import TodoViewState from './TodoViewState.svelte';
 	import Todo from '$lib/components/Todo';
+	import { v4 as uuid } from '@lukeed/uuid';
 
-	const { todos }: { todos: TodoRows } = $props();
+	const { todos, range }: { todos: TodoDocument[]; range: { start: Date; end: Date } } = $props();
 
-	const viewState = $derived(new TodoViewState(todos));
+	const viewState = $derived(new TodoViewState(todos, range));
 
-	const onKeydown = (date?: Date) => (e: KeyboardEvent) => {
+	const onKeydown = (date?: Date) => async (e: KeyboardEvent) => {
 		const target = e.target as HTMLInputElement;
-		const text = S.decodeUnknownEither(NonEmptyString1000)(target.value);
-		if (e.key === 'Enter' && Either.isRight(text)) {
-			db.create('todo', { done: false, text: text.right, date });
+		const text = target.value;
+		if (e.key === 'Enter') {
+			await db.todos.insert({
+				id: uuid(),
+				text,
+				done: false,
+				date: date?.toISOString() || null,
+				created: new Date().toISOString()
+			});
 			target.value = '';
 		}
 	};

@@ -1,58 +1,71 @@
-import * as S from '@effect/schema/Schema';
 import {
-	NonEmptyString1000,
-	SqliteBoolean,
-	SqliteDate,
-	cast,
-	database,
-	id,
-	table,
-	type QueryResult
-} from '@evolu/common';
-import { createEvolu } from '@evolu/common-web';
-import { PUBLIC_SYNC_URL } from '$env/static/public';
+	addRxPlugin,
+	createRxDatabase,
+	toTypedRxJsonSchema,
+	type ExtractDocumentTypeFromTypedRxJsonSchema,
+	type MangoQuery,
+	type RxCollection,
+	type RxDocument,
+	type RxJsonSchema
+} from 'rxdb';
+import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
+import { getRxStorageDexie } from 'rxdb/plugins/storage-dexie';
 
-type NullableExceptIdCreatedAtUpdatedAt<T> = {
-	readonly [K in keyof T]: K extends 'id' | 'createdAt' | 'updatedAt' ? T[K] : T[K] | null;
+addRxPlugin(RxDBDevModePlugin);
+
+const todoSchemaLiteral = {
+	version: 0,
+	primaryKey: 'id',
+	type: 'object',
+	properties: {
+		id: {
+			type: 'string',
+			maxLength: 100
+		},
+		text: {
+			type: 'string'
+		},
+		done: {
+			type: 'boolean'
+		},
+		date: {
+			type: ['string', 'null'],
+			format: 'date-time'
+		},
+		created: {
+			type: 'string',
+			format: 'date-time',
+			final: true
+		}
+	},
+	required: ['id', 'text', 'done', 'date', 'created']
+} as const;
+
+const schemaTyped = toTypedRxJsonSchema(todoSchemaLiteral);
+
+export type TodoDocType = ExtractDocumentTypeFromTypedRxJsonSchema<typeof schemaTyped>;
+
+export const todoSchema: RxJsonSchema<TodoDocType> = schemaTyped;
+
+export type TodoDocument = RxDocument<TodoDocType>;
+
+export type TodoCollection = RxCollection<TodoDocType>;
+
+export type TodoDatabaseCollections = {
+	todos: TodoCollection;
 };
 
-export const TodoId = id('Todo');
-
-export type TodoId = typeof TodoId.Type;
-
-export const TodoTable = table({
-	id: TodoId,
-	text: NonEmptyString1000,
-	date: S.NullOr(SqliteDate),
-	done: S.NullOr(SqliteBoolean)
+export const db = await createRxDatabase<TodoDatabaseCollections>({
+	name: 'todos',
+	storage: getRxStorageDexie()
 });
 
-export type TodoTable = typeof TodoTable.Type;
-
-export const Database = database({
-	todo: TodoTable
+await db.addCollections({
+	todos: {
+		schema: todoSchema
+	}
 });
 
-type Database = typeof Database.Type;
-
-export type TodoRows = QueryResult<NullableExceptIdCreatedAtUpdatedAt<TodoTable>>;
-
-export type TodoRow = TodoRows['row'];
-
-export const db = createEvolu(Database, { syncUrl: PUBLIC_SYNC_URL });
-export const allTodos = ({ start, end }: { start: Date; end: Date }) =>
-	db.createQuery((db) =>
-		db
-			.selectFrom('todo')
-			.selectAll()
-			.where('isDeleted', 'is not', cast(true))
-			.where((eb) => {
-				const filters = [];
-
-				filters.push(eb('date', '>=', cast(start)));
-
-				filters.push(eb('date', '<=', cast(end)));
-
-				return eb.and(filters).or('date', 'is', null);
-			})
-	);
+export const allTodos: MangoQuery<TodoDocType> = {
+	selector: {}
+};
