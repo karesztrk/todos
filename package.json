@@ -38,6 +38,7 @@
 	},
 	"dependencies": {
 		"@lukeed/uuid": "^2.0.1",
-		"dexie": "^4.0.10"
+		"dexie": "^4.0.10",
+		"dexie-cloud-addon": "^4.0.8"
 	}
 }
