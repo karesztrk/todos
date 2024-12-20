@@ -5,6 +5,7 @@ import {
 	type ExtractDocumentTypeFromTypedRxJsonSchema,
 	type MangoQuery,
 	type RxCollection,
+	type RxDatabase,
 	type RxDocument,
 	type RxJsonSchema
 } from 'rxdb';
@@ -55,16 +56,23 @@ export type TodoDatabaseCollections = {
 	todos: TodoCollection;
 };
 
-export const db = await createRxDatabase<TodoDatabaseCollections>({
+export let db: RxDatabase<TodoDatabaseCollections> | undefined;
+
+createRxDatabase<TodoDatabaseCollections>({
 	name: 'todos',
 	storage: getRxStorageDexie()
-});
-
-await db.addCollections({
-	todos: {
-		schema: todoSchema
-	}
-});
+})
+	.then((db) => {
+		db.addCollections({
+			todos: {
+				schema: todoSchema
+			}
+		});
+		return db;
+	})
+	.then((result) => {
+		db = result;
+	});
 
 export const allTodos: MangoQuery<TodoDocType> = {
 	selector: {}
