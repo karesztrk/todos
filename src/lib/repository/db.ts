@@ -1,58 +1,52 @@
-import * as S from '@effect/schema/Schema';
-import {
-	NonEmptyString1000,
-	SqliteBoolean,
-	SqliteDate,
-	cast,
-	database,
-	id,
-	table,
-	type QueryResult
-} from '@evolu/common';
-import { createEvolu } from '@evolu/common-web';
-import { PUBLIC_SYNC_URL } from '$env/static/public';
+import { createQueries, createStore } from 'tinybase/with-schemas';
 
-type NullableExceptIdCreatedAtUpdatedAt<T> = {
-	readonly [K in keyof T]: K extends 'id' | 'createdAt' | 'updatedAt' ? T[K] : T[K] | null;
+export const db = createStore()
+	.setTablesSchema({
+		todos: {
+			text: { type: 'string' },
+			done: { type: 'boolean' },
+			date: { type: 'string', default: undefined },
+			created: { type: 'string' }
+		}
+	})
+	.setTable('todos', {
+		'0001': {
+			text: 'Learn SvelteKit',
+			done: false,
+			date: new Date().toISOString(),
+			created: '2023-01-01'
+		},
+		'0002': {
+			text: 'Learn LightningCSS',
+			done: false,
+			date: new Date().toISOString(),
+			created: '2023-01-02'
+		}
+	});
+
+const queries = createQueries(db);
+
+export interface Todo {
+	id: string;
+	text: string;
+	done: boolean;
+	date?: Date;
+	created: string;
+}
+
+queries.setQueryDefinition('query', 'todos', ({ select }) => {
+	select('text');
+	select('done');
+	select('date');
+	select('created');
+});
+
+export const getAllTodos = (): Todo[] => {
+	return queries
+		.getResultSortedRowIds('query', 'created', true)
+		.map((rowId) => ({ ...queries.getResultRow('query', rowId), id: rowId }) as Todo)
+		.map((row) => ({
+			...row,
+			date: typeof row.date === 'string' ? new Date(row.date) : undefined
+		}));
 };
-
-export const TodoId = id('Todo');
-
-export type TodoId = typeof TodoId.Type;
-
-export const TodoTable = table({
-	id: TodoId,
-	text: NonEmptyString1000,
-	date: S.NullOr(SqliteDate),
-	done: S.NullOr(SqliteBoolean)
-});
-
-export type TodoTable = typeof TodoTable.Type;
-
-export const Database = database({
-	todo: TodoTable
-});
-
-type Database = typeof Database.Type;
-
-export type TodoRows = QueryResult<NullableExceptIdCreatedAtUpdatedAt<TodoTable>>;
-
-export type TodoRow = TodoRows['row'];
-
-export const db = createEvolu(Database, { syncUrl: PUBLIC_SYNC_URL });
-export const allTodos = ({ start, end }: { start: Date; end: Date }) =>
-	db.createQuery((db) =>
-		db
-			.selectFrom('todo')
-			.selectAll()
-			.where('isDeleted', 'is not', cast(true))
-			.where((eb) => {
-				const filters = [];
-
-				filters.push(eb('date', '>=', cast(start)));
-
-				filters.push(eb('date', '<=', cast(end)));
-
-				return eb.and(filters).or('date', 'is', null);
-			})
-	);

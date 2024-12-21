@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { db, type TodoRow } from '$lib/repository/db';
+	import { db, type Todo } from '$lib/repository/db';
 
 	interface Props {
-		todo: TodoRow;
+		todo: Todo;
 	}
+
 	const { todo }: Props = $props();
 
 	const checked = Boolean(todo !== null && todo.done);
@@ -13,7 +14,7 @@
 			return;
 		}
 		const done = e.currentTarget.checked;
-		db.update('todo', { id: todo.id, done });
+		db.setCell('todos', todo.id, 'done', done);
 	};
 </script>
 
