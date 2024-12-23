@@ -1,6 +1,5 @@
 import { createQueries, createStore, type Id } from 'tinybase/with-schemas';
-import Database from '@tauri-apps/plugin-sql';
-import { createCustomPersister } from 'tinybase/persisters/with-schemas';
+import { createIndexedDbPersister } from 'tinybase/persisters/persister-indexed-db';
 
 export const db = createStore().setTablesSchema({
 	todos: {
@@ -20,43 +19,7 @@ export interface TodoRow {
 	created: string;
 }
 
-let interval: number;
-
-export const persister = createCustomPersister(
-	db,
-	async () => {
-		try {
-			const database = await Database.load('sqlite:db.sqlite');
-			const res = await database.select<Todo[]>(
-				'SELECT id, text, done, date, created FROM todo ORDER BY created DESC'
-			);
-
-			const todoTable = res.reduce<any>((acc, todo) => {
-				acc[todo.id] = todo;
-				return acc;
-			}, {});
-			return [{ todos: todoTable }];
-		} catch {}
-	},
-	async (getContent, changes) => {
-		for (const t of getContent()) {
-			const todos = t.todos;
-			if (todos) {
-				const database = await Database.load('sqlite:db.sqlite');
-				for (const key in todos) {
-					const todo = todos[key];
-
-					await database.execute(
-						'INSERT into todo (id, text, done, date, created) VALUES ($1, $2, $3, $4, $5)',
-						[key, todo.text, todo.done, todo.date, todo.created]
-					);
-				}
-			}
-		}
-	},
-	(listener: TimerHandler) => (interval = setInterval(listener, 1000)),
-	() => clearInterval(interval)
-);
+const persister = createIndexedDbPersister(db, 'todos/todoStore');
 persister
 	.startAutoLoad()
 	.then(() => {})
