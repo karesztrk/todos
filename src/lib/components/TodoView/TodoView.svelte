@@ -4,6 +4,8 @@
 	import TodoViewState from './TodoViewState.svelte';
 	import Todo from '$lib/components/Todo';
 	import { v4 as uuid } from '@lukeed/uuid';
+	import TodoDialog from '../TodoDialog/TodoDialog.svelte';
+	import { setViewContext } from './TodoViewContext.svelte';
 
 	const { todos = [], range }: { todos: TodoType[]; range: { start: Date; end: Date } } = $props();
 
@@ -22,6 +24,8 @@
 			target.value = '';
 		}
 	};
+
+	setViewContext();
 </script>
 
 <t-view>
@@ -46,6 +50,7 @@
 			<input type="text" name="text" onkeydown={onKeydown()} />
 		</TodoList>
 	</div>
+	<TodoDialog />
 </t-view>
 
 <style>
@@ -80,11 +85,7 @@
 		}
 
 		input[type='text'] {
-			width: 100%;
 			height: var(--row-height);
-			background: none;
-			border: none;
-			outline-offset: var(--outline-offset);
 		}
 
 		& > div {

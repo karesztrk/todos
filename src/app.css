@@ -60,12 +60,20 @@
 		}
 	}
 
-	input {
+	input,
+	textarea {
 		&:focus-visible {
 			outline: 2px solid currentColor;
 			outline-offset: var(--outline-offset);
 		}
 
+		width: 100%;
+		background: none;
+		border: none;
+		outline-offset: var(--outline-offset);
+	}
+
+	input {
 		&[type='checkbox'] {
 			appearance: none;
 			/* For iOS < 15 */
@@ -100,6 +108,10 @@
 			}
 		}
 	}
+}
+
+textarea {
+	resize: none;
 }
 
 @layer typography {
@@ -160,5 +172,9 @@
 
 		--color-border: var(--color-active);
 		--color-border-muted: var(--color-muted);
+
+		--color-modal-background: var(--color-background);
+		--color-modal-border: oklch(76.68% 0 0);
+		--color-modal-box-shadow: oklch(82.49% 0.117 202.05 / 25%);
 	}
 }
