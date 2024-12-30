@@ -1,35 +1,26 @@
 <script lang="ts">
 	import TodoView from '$lib/components/TodoView';
-	import { addDays, startOfWeek } from '$lib/components/TodoView/TodoView.util';
-	import { db, allTodos } from '$lib/repository/db';
+	import TodoRange from '$lib/components/TodoView/TodoRange.svelte';
+	import { startOfWeek } from '$lib/components/TodoView/TodoView.util';
+	import { db, getAllTodos } from '$lib/repository/db';
 
 	const now = new Date();
 
 	const start = startOfWeek(now);
-	const range = $state({ start, end: addDays(start, 6) });
+	const range = new TodoRange(start, 6);
 
-	let todos = $state(db.loadQuery(allTodos(range)));
+	let todos = $state(getAllTodos());
 
-	$effect(() => {
-		const unsubscribe = db.subscribeQuery(allTodos(range))(() => {
-			const result = db.getQuery(allTodos(range));
-			todos = Promise.resolve(result);
-		});
-		return () => {
-			unsubscribe();
-		};
+	db.addTableListener('todos', () => {
+		todos = getAllTodos();
 	});
 
 	const next = () => {
-		range.start = addDays(range.start, 7);
-		range.end = addDays(range.end, 7);
-		todos = db.loadQuery(allTodos(range));
+		range.addDays(7);
 	};
 
 	const previous = () => {
-		range.start = addDays(range.start, -7);
-		range.end = addDays(range.end, -7);
-		todos = db.loadQuery(allTodos(range));
+		range.addDays(-7);
 	};
 </script>
 
@@ -48,13 +39,11 @@
 	</hrgroup>
 
 	<article>
-		{#await todos}
+		{#if !todos}
 			<div>Loading...</div>
-		{:then todos}
-			<TodoView {todos} />
-		{:catch error}
-			<p>Something went wrong: {error.message}</p>
-		{/await}
+		{:else}
+			<TodoView {todos} {range} />
+		{/if}
 	</article>
 </section>
 

@@ -10,7 +10,7 @@
 	const { active, children, header, class: className }: Props = $props();
 </script>
 
-<t-list active={active ? '' : undefined} class={className}>
+<t-list active={active ? '' : undefined} class={className} role="list">
 	<t-header>
 		{@render header?.()}
 	</t-header>

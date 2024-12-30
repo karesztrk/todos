@@ -1,28 +1,35 @@
 <script lang="ts">
-	import { Either } from 'effect';
-	import * as S from '@effect/schema/Schema';
-	import { NonEmptyString1000 } from '@evolu/common';
-	import { db, type TodoRows } from '$lib/repository/db';
+	import { db, type Todo as TodoType } from '$lib/repository/db';
 	import TodoList from '$lib/components/TodoList';
 	import TodoViewState from './TodoViewState.svelte';
 	import Todo from '$lib/components/Todo';
+	import { v4 as uuid } from '@lukeed/uuid';
+	import TodoDialog from '../TodoDialog/TodoDialog.svelte';
+	import { setViewContext } from './TodoViewContext.svelte';
 
-	const { todos }: { todos: TodoRows } = $props();
+	const { todos = [], range }: { todos: TodoType[]; range: { start: Date; end: Date } } = $props();
 
-	const viewState = $derived(new TodoViewState(todos));
+	const viewState = $derived(new TodoViewState(todos, range));
 
-	const onKeydown = (date?: Date) => (e: KeyboardEvent) => {
+	const onKeydown = (date?: Date) => async (e: KeyboardEvent) => {
 		const target = e.target as HTMLInputElement;
-		const text = S.decodeUnknownEither(NonEmptyString1000)(target.value);
-		if (e.key === 'Enter' && Either.isRight(text)) {
-			db.create('todo', { done: false, text: text.right, date });
+		const text = target.value;
+		if (e.key === 'Enter' && text) {
+			db.setRow('todos', uuid(), {
+				done: false,
+				text,
+				date: date?.toISOString(),
+				created: new Date().toISOString()
+			});
 			target.value = '';
 		}
 	};
+
+	setViewContext();
 </script>
 
 <t-view>
-	{#each viewState.weekDays as { d, date, name, today }}
+	{#each viewState.weekDays as { d, date, name, today } (d)}
 		<div>
 			<TodoList active={today}>
 				{#snippet header()}<div class="bold">{date}</div>
@@ -37,12 +44,13 @@
 	<div>
 		<TodoList class="someday">
 			{#snippet header()}<div class="bold">Someday</div>{/snippet}
-			{#each viewState.list() as todo}
+			{#each viewState.list() as todo (todo.id)}
 				<Todo {todo} />
 			{/each}
 			<input type="text" name="text" onkeydown={onKeydown()} />
 		</TodoList>
 	</div>
+	<TodoDialog />
 </t-view>
 
 <style>
@@ -77,11 +85,7 @@
 		}
 
 		input[type='text'] {
-			width: 100%;
 			height: var(--row-height);
-			background: none;
-			border: none;
-			outline-offset: var(--outline-offset);
 		}
 
 		& > div {
