@@ -1,3 +1,4 @@
+import { createIndexedDbPersister } from 'tinybase/persisters/persister-indexed-db';
 import { createQueries, createStore } from 'tinybase/with-schemas';
 
 export const db = createStore().setTablesSchema({
@@ -24,6 +25,10 @@ export const db = createStore().setTablesSchema({
 // })
 
 const queries = createQueries(db);
+const persister = createIndexedDbPersister(db, 'todos');
+
+persister.startAutoLoad().catch(console.error);
+persister.startAutoSave().catch(console.error);
 
 export interface Todo {
 	id: string;
