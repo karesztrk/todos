@@ -29,7 +29,7 @@
 	{#if todo !== null}
 		<button onclick={onClick}>{todo.text}</button>
 	{/if}
-	<input type="checkbox" onchange={onChange} {checked} />
+	<input type="checkbox" onchange={onChange} {checked} enterkeyhint="done" />
 </t-todo>
 
 <style>
