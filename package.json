@@ -38,6 +38,7 @@
 	},
 	"dependencies": {
 		"@lukeed/uuid": "^2.0.1",
+		"@oddbird/css-anchor-positioning": "^0.4.0",
 		"tinybase": "^5.4.4"
 	}
 }

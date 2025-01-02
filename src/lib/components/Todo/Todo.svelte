@@ -41,15 +41,21 @@
 	const onClick = () => {
 		ctx.selectedTodo = todo.id;
 	};
-
-	$effect(() => {});
 </script>
 
-<t-todo bind:this={element} done={todo !== null && todo.done ? '' : undefined} role="listitem">
+<t-todo
+	bind:this={element}
+	done={todo !== null && todo.done ? '' : undefined}
+	role="listitem"
+	style:--popover-name="--popover-{todo.id}"
+>
 	{#if todo !== null}
 		<button type="button" onclick={onClick}>{todo.text}</button>
 	{/if}
 	<input type="checkbox" onchange={onChange} {checked} />
+
+	<button type="button" class="menu-button" popovertarget="popover-{todo.id}">Open Popover</button>
+	<div popover="auto" class="menu" id="popover-{todo.id}">Greetings from {todo.id}</div>
 </t-todo>
 
 <style>
@@ -57,6 +63,23 @@
 		--_strike-size: 2px;
 		--_gradient-size: calc(var(--_strike-size) * 0.5);
 		--_transition-duration: 400ms;
+
+		.menu-button {
+			border: revert;
+			background: revert;
+			color: var(--color-text);
+			anchor-name: var(--popover-name);
+		}
+
+		.menu {
+			margin: 0;
+			inset: auto;
+			position-anchor: var(--popover-name);
+			/* anchoring to the button */
+			position: absolute;
+			top: anchor(var(--popover-name) bottom);
+			right: anchor(var(--popover-name) right);
+		}
 
 		display: flex;
 		justify-content: space-between;

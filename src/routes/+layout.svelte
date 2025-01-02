@@ -2,6 +2,7 @@
 	import Header from './Header.svelte';
 	import '../app.css';
 	import '../fonts.css';
+	import Footer from './Footer.svelte';
 
 	let { children } = $props();
 </script>
@@ -12,11 +13,10 @@
 	{@render children()}
 </main>
 
-<footer></footer>
+<Footer />
 
 <style>
-	main,
-	footer {
+	main {
 		grid-column: content;
 		container: main / inline-size;
 	}
