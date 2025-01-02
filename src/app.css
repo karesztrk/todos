@@ -1,6 +1,6 @@
 @import url('./reset.css') layer(reset);
 
-@layer reset, base, typography, theme, components, utilities, animations, viewtransition, customproperty, scrollanimation;
+@layer reset, base, typography, theme, components, utilities, animations, viewtransition, customproperty, scrollanimation, popover;
 
 :root {
 	--gap: clamp(2rem, 1vw, 3rem);
@@ -108,10 +108,43 @@
 			}
 		}
 	}
-}
 
-textarea {
-	resize: none;
+	textarea {
+		resize: none;
+	}
+
+	dialog {
+		border-radius: 12px;
+		border: 2px solid var(--color-modal-border);
+		padding: 0;
+		background: var(--color-modal-background);
+		box-shadow: 0 0 8px 0 var(--color-modal-box-shadow);
+		opacity: 0;
+
+		&::backdrop {
+			backdrop-filter: blur(2px);
+			opacity: 0;
+		}
+
+		> div {
+			padding: 2rem 2.5rem;
+		}
+
+		&[open] {
+			opacity: 1;
+		}
+	}
+
+	dialog[open]::backdrop {
+		opacity: 1;
+	}
+
+	@starting-style {
+		dialog[open],
+		dialog[open]::backdrop {
+			opacity: 0;
+		}
+	}
 }
 
 @layer typography {
@@ -158,6 +191,12 @@ textarea {
 	}
 }
 
+@layer viewtransition {
+	@view-transition {
+		navigation: auto;
+	}
+}
+
 @layer theme {
 	:root {
 		--color-active: #fff;
@@ -176,5 +215,13 @@ textarea {
 		--color-modal-background: var(--color-background);
 		--color-modal-border: oklch(76.68% 0 0);
 		--color-modal-box-shadow: oklch(82.49% 0.117 202.05 / 25%);
+	}
+}
+
+@layer popover {
+	@position-try --left {
+		inset: auto;
+		top: anchor(bottom);
+		right: anchor(right);
 	}
 }

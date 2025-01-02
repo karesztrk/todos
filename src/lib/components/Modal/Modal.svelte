@@ -31,12 +31,12 @@
 <dialog bind:this={dialog} onclose={onClose}>
 	<div>
 		{@render children?.()}
+		<button popovertarget="modal">Hide</button>
 	</div>
 </dialog>
 
 <style>
 	dialog {
-		width: min(100%, 32em);
 		border-radius: 12px;
 		border: 2px solid var(--color-modal-border);
 		padding: 0;

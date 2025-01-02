@@ -25,9 +25,19 @@
 	};
 </script>
 
-<t-todo done={todo !== null && todo.done ? '' : undefined} role="listitem">
+<t-todo
+	done={todo !== null && todo.done ? '' : undefined}
+	role="listitem"
+	style={`--anchor-name: --modal-${todo.id}`}
+>
 	{#if todo !== null}
-		<button onclick={onClick}>{todo.text}</button>
+		<button popovertarget={`modal-${todo.id}`}>{todo.text}</button>
+
+		<dialog popover id={`modal-${todo.id}`}>
+			<div>
+				<button popovertarget={`modal-${todo.id}`}>Hide</button>
+			</div>
+		</dialog>
 	{/if}
 	<input type="checkbox" onchange={onChange} {checked} />
 </t-todo>
@@ -36,6 +46,7 @@
 	t-todo {
 		--_strike-size: 2px;
 		--_gradient-size: calc(var(--_strike-size) * 0.5);
+		anchor-name: var(--anchor-name);
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -73,6 +84,26 @@
 		input {
 			margin-inline-end: calc(var(--outline-offset) * 2);
 			flex-shrink: 0;
+		}
+
+		dialog {
+			display: none;
+			/* anchoring to the button */
+			position-anchor: var(--anchor-name);
+			position: absolute;
+			margin: 0;
+			inset: auto;
+			top: anchor(bottom);
+			left: anchor(left);
+			width: anchor-size(--profile-button width);
+			opacity: 0;
+
+			position-try-fallbacks: --left;
+
+			&:popover-open {
+				display: block;
+				opacity: 1;
+			}
 		}
 	}
 </style>
