@@ -2,8 +2,8 @@
 	font-family: 'BespokeSerif';
 	src:
 		local('BespokeSerif'),
-		url('../fonts/BespokeSerif-Variable.woff2') format('woff2'),
-		url('../fonts/BespokeSerif-Variable.woff') format('woff');
+		url('/fonts/BespokeSerif-Variable.woff2') format('woff2'),
+		url('/fonts/BespokeSerif-Variable.woff') format('woff');
 	font-weight: 300 800;
 	font-display: swap;
 	font-style: normal;
