@@ -29,6 +29,8 @@
 
 	--h1-base: 2rem;
 	--font-size-fluid: 1cqi;
+
+	scroll-behavior: smooth;
 }
 
 @layer base {
@@ -46,6 +48,7 @@
 	button {
 		--_color-button-bg: var(--color-button-default-bg);
 		--_color-button-text: var(--color-button-default-text);
+		--_color-button-active: var(--color-button-default-active);
 
 		border: 0;
 		padding: 0.25em 1.375em;
@@ -57,6 +60,10 @@
 		&:focus-visible {
 			outline: 2px solid var(--_color-button-bg);
 			outline-offset: var(--outline-offset);
+		}
+
+		&:active {
+			outline: 2px solid var(--_color-button-active);
 		}
 	}
 
@@ -169,6 +176,7 @@ textarea {
 
 		--color-button-default-text: #000;
 		--color-button-default-bg: oklch(88.53% 0 0);
+		--color-button-default-active: oklch(50% 0.117 202.05);
 
 		--color-border: var(--color-active);
 		--color-border-muted: var(--color-muted);

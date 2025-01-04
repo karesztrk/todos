@@ -11,14 +11,18 @@
 
 	const viewState = $derived(new TodoViewState(todos, range));
 
-	const onKeydown = (date?: Date) => async (e: KeyboardEvent) => {
-		const target = e.target as HTMLInputElement;
-		const text = target.value;
-		if (e.key === 'Enter' && text) {
+	const onSubmit = (e: SubmitEvent) => {
+		e.preventDefault();
+		e.stopPropagation();
+		const target = e.target as HTMLFormElement;
+		const values = new FormData(target, e.submitter);
+		const text = values.get('text') as string | null;
+		const date = values.get('date') as string | null;
+		if (text) {
 			db.setRow('todos', uuid(), {
 				done: false,
 				text,
-				date: date?.toISOString(),
+				date: date ? new Date(date).toISOString() : undefined,
 				created: new Date().toISOString()
 			});
 			target.value = '';
@@ -30,26 +34,27 @@
 
 <t-view>
 	{#each viewState.weekDays as { d, date, name, today } (d)}
-		<div>
+		<form onsubmit={onSubmit}>
 			<TodoList active={today}>
 				{#snippet header()}<div class="bold">{date}</div>
 					<div class="light">{name}</div>{/snippet}
 				{#each viewState.list(d) as todo}
 					<Todo {todo} />
 				{/each}
-				<input type="text" name="text" onkeydown={onKeydown(d)} />
+				<input type="hidden" name="date" value={d} />
+				<input type="text" name="text" />
 			</TodoList>
-		</div>
+		</form>
 	{/each}
-	<div>
+	<form onsubmit={onSubmit}>
 		<TodoList class="someday">
 			{#snippet header()}<div class="bold">Someday</div>{/snippet}
 			{#each viewState.list() as todo (todo.id)}
 				<Todo {todo} />
 			{/each}
-			<input type="text" name="text" onkeydown={onKeydown()} />
+			<input type="text" name="text" />
 		</TodoList>
-	</div>
+	</form>
 	<TodoDialog />
 </t-view>
 
@@ -69,7 +74,7 @@
 		@container main (width > 90ch) {
 			grid-template-columns: repeat(var(--_columns), 1fr);
 
-			& > div {
+			& > form {
 				grid-row: 1 / span 2;
 
 				&:nth-child(n + 6),
@@ -77,9 +82,8 @@
 					grid-row: span 1;
 				}
 
-				&:last-child {
-					grid-column: 1 / span 2;
-					grid-row: 3 / span 2;
+				&:last-of-type {
+					grid-area: 3 / 1 / span 2 / span 2;
 				}
 			}
 		}
@@ -88,7 +92,7 @@
 			height: var(--row-height);
 		}
 
-		& > div {
+		& > form {
 			background: repeating-linear-gradient(
 				transparent 0 calc(var(--row-height) - 1px),
 				rgba(255, 255, 255, 0.25) calc(var(--row-height) - 1px) var(--row-height)

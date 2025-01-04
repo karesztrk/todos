@@ -27,9 +27,9 @@
 
 <t-todo done={todo !== null && todo.done ? '' : undefined} role="listitem">
 	{#if todo !== null}
-		<button onclick={onClick}>{todo.text}</button>
+		<button type="button" onclick={onClick}>{todo.text}</button>
 	{/if}
-	<input type="checkbox" onchange={onChange} {checked} enterkeyhint="done" />
+	<input type="checkbox" onchange={onChange} {checked} />
 </t-todo>
 
 <style>
@@ -68,6 +68,9 @@
 			padding: 0;
 			margin-inline: 4px;
 			color: inherit;
+			&:active {
+				outline: revert;
+			}
 		}
 
 		input {
