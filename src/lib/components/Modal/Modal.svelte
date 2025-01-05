@@ -4,10 +4,11 @@
 	interface Props {
 		show?: boolean;
 		children: Snippet;
+		actions?: Snippet;
 		onClose?: (e: Event) => void;
 	}
 
-	let { show = $bindable(), children, onClose: onCloseProp }: Props = $props();
+	let { show = $bindable(), children, actions, onClose: onCloseProp }: Props = $props();
 
 	let dialog = $state<HTMLDialogElement>();
 
@@ -31,6 +32,7 @@
 <dialog bind:this={dialog} onclose={onClose}>
 	<div>
 		{@render children?.()}
+		{@render actions?.()}
 	</div>
 </dialog>
 
@@ -43,6 +45,7 @@
 		background: var(--color-modal-background);
 		box-shadow: 0 0 8px 0 var(--color-modal-box-shadow);
 		opacity: 0;
+		container: modal / inline-size;
 
 		&::backdrop {
 			backdrop-filter: blur(2px);
@@ -50,7 +53,11 @@
 		}
 
 		> div {
-			padding: 2rem 2.5rem;
+			padding: 1rem 1.5rem;
+
+			@container modal (width > 50ch) {
+				padding: 2rem 2.5rem;
+			}
 		}
 
 		&[open] {

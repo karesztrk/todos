@@ -80,6 +80,14 @@
 		outline-offset: var(--outline-offset);
 	}
 
+	input[type='date'] {
+		--_color-input-border: var(--color-input-border);
+		border-block-end: 1px solid var(--_color-input-border);
+		&:focus {
+			--_color-input-border: var(--color-input-active);
+		}
+	}
+
 	input {
 		&[type='checkbox'] {
 			appearance: none;
@@ -115,10 +123,17 @@
 			}
 		}
 	}
-}
 
-textarea {
-	resize: none;
+	textarea {
+		--_color-input-border: var(--color-input-border);
+		resize: none;
+		padding-inline: 1rem;
+		border-inline-start: 1px solid var(--_color-input-border);
+
+		&:focus {
+			--_color-input-border: var(--color-input-active);
+		}
+	}
 }
 
 @layer typography {
@@ -183,6 +198,9 @@ textarea {
 
 		--color-modal-background: var(--color-background);
 		--color-modal-border: oklch(76.68% 0 0);
-		--color-modal-box-shadow: oklch(82.49% 0.117 202.05 / 25%);
+		--color-modal-box-shadow: oklch(82.49% 0.117 202.05 / 50%);
+
+		--color-input-border: oklch(76.68% 0 0);
+		--color-input-active: var(--color-active);
 	}
 }
