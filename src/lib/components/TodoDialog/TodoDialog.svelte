@@ -53,42 +53,56 @@
 </script>
 
 <Modal bind:show {onClose}>
-	<div>
+	<t-dialog-content>
+		<div>
+			<label for="date">Due</label>
+			<input
+				id="date"
+				type="date"
+				value={selectedTodo?.date && toDateString(new Date(selectedTodo?.date))}
+				onchange={onDateChange}
+			/>
+		</div>
 		<input
-			type="date"
-			value={selectedTodo?.date && toDateString(new Date(selectedTodo?.date))}
-			name="date"
-			onchange={onDateChange}
+			type="checkbox"
+			checked={selectedTodo?.done}
+			onchange={onDoneChange}
+			aria-label="Todo done"
 		/>
-		<input type="checkbox" name="done" checked={selectedTodo?.done} onchange={onDoneChange} />
-		<textarea value={selectedTodo?.text} name="text" rows="2" oninput={onTextChange}></textarea>
-	</div>
-	<form method="dialog">
-		<button formmethod="dialog">OK</button>
-	</form>
+		<textarea value={selectedTodo?.text} rows="2" oninput={onTextChange} aria-label="Todo text"
+		></textarea>
+	</t-dialog-content>
+	{#snippet actions()}
+		<form method="dialog">
+			<button formmethod="dialog" aria-label="Ok and close dialog">OK</button>
+		</form>
+	{/snippet}
 </Modal>
 
 <style>
-	div {
+	t-dialog-content {
 		display: grid;
 		grid-template-columns: 1fr min-content;
-		gap: 1rem;
-		container: todo-dialog / inline-size;
 		align-items: center;
-
 		font-size: 1.15rem;
 
 		@supports (font-size: 1cqi) {
-			font-size: min(calc(0.5rem + 1cqi), 1.15rem);
+			font-size: clamp(1rem, 4cqi, 1.25rem);
 		}
 
 		textarea {
+			margin-block: 2rem;
+
+			@container modal (width > 50ch) {
+				margin-block: 2.5rem;
+			}
+
 			grid-column: span 2;
 
 			font-size: 1.5rem;
 
 			@supports (font-size: 1cqi) {
-				font-size: min(calc(1rem + 1cqi), 1.5rem);
+				font-size: clamp(1.25rem, 5cqi, 1.5rem);
 			}
 		}
 
@@ -104,10 +118,8 @@
 		}
 
 		input[type='date'] {
-			width: auto;
 			justify-self: flex-start;
+			width: auto;
 		}
-
-		margin-block-end: 1rem;
 	}
 </style>
