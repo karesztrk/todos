@@ -48,7 +48,11 @@
 		if (!ctx.selectedTodo) {
 			return;
 		}
-		db.setCell('todos', ctx.selectedTodo, 'date', date);
+		if (date) {
+			db.setCell('todos', ctx.selectedTodo, 'date', date);
+		} else {
+			db.delCell('todos', ctx.selectedTodo, 'date');
+		}
 	};
 </script>
 
