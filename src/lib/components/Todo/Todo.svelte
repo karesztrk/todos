@@ -8,6 +8,8 @@
 
 	const { todo }: Props = $props();
 
+	let element = $state<HTMLElement>();
+
 	const ctx = getViewContext();
 
 	const checked = Boolean(todo !== null && todo.done);
@@ -18,14 +20,32 @@
 		}
 		const done = e.currentTarget.checked;
 		db.setCell('todos', todo.id, 'done', done);
+
+		if (element) {
+			if (done) {
+				element.animate([{ '--background-size': '100%' }], {
+					duration: 200,
+					fill: 'forwards',
+					easing: 'ease'
+				});
+			} else {
+				element.animate([{ '--background-size': '0%' }], {
+					duration: 100,
+					fill: 'forwards',
+					easing: 'ease-out'
+				});
+			}
+		}
 	};
 
 	const onClick = () => {
 		ctx.selectedTodo = todo.id;
 	};
+
+	$effect(() => {});
 </script>
 
-<t-todo done={todo !== null && todo.done ? '' : undefined} role="listitem">
+<t-todo bind:this={element} done={todo !== null && todo.done ? '' : undefined} role="listitem">
 	{#if todo !== null}
 		<button type="button" onclick={onClick}>{todo.text}</button>
 	{/if}
@@ -36,6 +56,8 @@
 	t-todo {
 		--_strike-size: 2px;
 		--_gradient-size: calc(var(--_strike-size) * 0.5);
+		--_transition-duration: 400ms;
+
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -45,15 +67,7 @@
 
 		&[done] {
 			color: var(--color-text-muted);
-			button {
-				background: linear-gradient(
-					180deg,
-					transparent calc(50% - var(--_gradient-size)),
-					var(--color-border-muted) calc(50% - var(--_gradient-size)),
-					var(--color-border-muted) calc(50% + var(--_gradient-size)),
-					transparent calc(50% + var(--_gradient-size))
-				);
-			}
+			--background-size: 100%;
 		}
 
 		button {
@@ -61,13 +75,25 @@
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
-			background: none;
+			background-color: transparent;
+			background-repeat: no-repeat;
 			text-align: left;
 			border: none;
 			border-radius: 0px;
 			padding: 0;
 			margin-inline: 4px;
 			color: inherit;
+
+			background-size: var(--background-size);
+			background-image: linear-gradient(
+				180deg,
+				transparent calc(50% - var(--_gradient-size)),
+				var(--color-border-muted) calc(50% - var(--_gradient-size)),
+				var(--color-border-muted) calc(50% + var(--_gradient-size)),
+				transparent calc(50% + var(--_gradient-size))
+			);
+
+			transition: color var(--_transition-duration) ease;
 			&:active {
 				outline: revert;
 			}
