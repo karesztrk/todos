@@ -9,23 +9,28 @@
 
 	const { todos = [], range }: { todos: TodoType[]; range: { start: Date; end: Date } } = $props();
 
+	$effect(() => {
+		const active = document.querySelector('t-list[active]');
+		if (active) {
+			active.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+		}
+	});
+
 	const viewState = $derived(new TodoViewState(todos, range));
 
-	const onSubmit = (e: SubmitEvent) => {
+	const onSubmit = (date?: Date) => (e: SubmitEvent) => {
 		e.preventDefault();
-		e.stopPropagation();
 		const target = e.target as HTMLFormElement;
 		const values = new FormData(target, e.submitter);
 		const text = values.get('text') as string | null;
-		const date = values.get('date') as string | null;
 		if (text) {
 			db.setRow('todos', uuid(), {
 				done: false,
 				text,
-				date: date ? new Date(date).toISOString() : undefined,
+				date: date?.toISOString(),
 				created: new Date().toISOString()
 			});
-			target.value = '';
+			target.reset();
 		}
 	};
 
@@ -33,20 +38,19 @@
 </script>
 
 <t-view>
-	{#each viewState.weekDays as { d, date, name, today } (d)}
-		<form onsubmit={onSubmit}>
+	{#each viewState.weekDays as { d, date, name, today } (date)}
+		<form onsubmit={onSubmit(d)}>
 			<TodoList active={today}>
 				{#snippet header()}<div class="bold">{date}</div>
 					<div class="light">{name}</div>{/snippet}
-				{#each viewState.list(d) as todo}
+				{#each viewState.list(d) as todo (todo.id)}
 					<Todo {todo} />
 				{/each}
-				<input type="hidden" name="date" value={d} />
 				<input type="text" name="text" />
 			</TodoList>
 		</form>
 	{/each}
-	<form onsubmit={onSubmit}>
+	<form onsubmit={onSubmit()}>
 		<TodoList class="someday">
 			{#snippet header()}<div class="bold">Someday</div>{/snippet}
 			{#each viewState.list() as todo (todo.id)}
