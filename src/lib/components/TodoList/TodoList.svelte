@@ -8,17 +8,9 @@
 	}
 
 	const { active, children, header, class: className }: Props = $props();
-
-	let element = $state<HTMLElement>();
-
-	$effect(() => {
-		if (element && active) {
-			element.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
-		}
-	});
 </script>
 
-<t-list bind:this={element} active={active ? '' : undefined} class={className} role="list">
+<t-list active={active ? '' : undefined} class={className} role="list">
 	<t-header>
 		{@render header?.()}
 	</t-header>
