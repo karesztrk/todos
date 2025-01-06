@@ -69,7 +69,13 @@
 			onchange={onDoneChange}
 			aria-label="Todo done"
 		/>
-		<textarea value={selectedTodo?.text} rows="2" oninput={onTextChange} aria-label="Todo text"
+		<!-- svelte-ignore a11y_autofocus -->
+		<textarea
+			value={selectedTodo?.text}
+			rows="2"
+			oninput={onTextChange}
+			aria-label="Todo text"
+			autofocus
 		></textarea>
 	</t-dialog-content>
 	{#snippet actions()}
