@@ -12,7 +12,7 @@
 	background-color: var(--color-background);
 	color: var(--color-text);
 
-	--outline: 2px solid currentColor;
+	--outline: 2px solid var(--color-active);
 	--outline-offset: 2px;
 
 	--font-base: 'BespokeSerif', serif;
@@ -56,21 +56,34 @@
 		background-color: var(--_color-button-bg);
 		border-radius: 6px;
 		line-height: 1.2;
+		/* Fast appearance */
+		transition: outline 50ms ease-in;
+
+		&:focus {
+			outline: 2px solid var(--_color-button-active);
+		}
 
 		&:focus-visible {
 			outline: 2px solid var(--_color-button-bg);
 			outline-offset: var(--outline-offset);
 		}
+	}
 
-		&:active {
-			outline: 2px solid var(--_color-button-active);
+	textarea {
+		--_color-input-border: var(--color-input-border);
+		resize: none;
+		padding-inline: 1rem;
+		box-shadow: -2px 0 0 0 var(--_color-input-border);
+
+		&:focus {
+			--_color-input-border: transparent;
 		}
 	}
 
 	input,
 	textarea {
 		&:focus-visible {
-			outline: 2px solid currentColor;
+			outline: var(--outline);
 			outline-offset: var(--outline-offset);
 		}
 
@@ -90,6 +103,8 @@
 
 	input {
 		&[type='checkbox'] {
+			--_checkmark-animation-duration: 400ms;
+			--_tada-animation-duration: 500ms;
 			appearance: none;
 			/* For iOS < 15 */
 			background-color: var(--color-background);
@@ -119,52 +134,51 @@
 			}
 
 			&:after {
+				--_base-color: var(--color-checkbox-tada);
+				--_tada-color-n: hsl(from var(--_base-color) calc(h + 0) s l);
+				--_tada-color-ne: hsl(from var(--_base-color) calc(h + 270) s l);
+				--_tada-color-e: hsl(from var(--_base-color) calc(h + 90) s l);
+				--_tada-color-se: hsl(from var(--_base-color) calc(h + 180) s l);
+				--_tada-color-s: hsl(from var(--_base-color) calc(h + 135) s l);
+				--_tada-color-sw: hsl(from var(--_base-color) calc(h + 225) s l);
+				--_tada-color-w: hsl(from var(--_base-color) calc(h + 45) s l);
+				--_tada-color-nw: hsl(from var(--_base-color) calc(h + 315) s l);
 				content: '';
 				position: absolute;
-				top: 4px;
-				left: 4px;
-				width: 5px;
-				height: 5px;
-				border-radius: 2px;
+				top: 0.25em;
+				left: 0.25em;
+				width: 0.3125em;
+				height: 0.3125em;
+				border-radius: 0.125em;
 				box-shadow:
-					0 -18px 0 var(--color-checkbox-tada),
-					12px -12px 0 var(--color-checkbox-tada),
-					18px 0 0 var(--color-checkbox-tada),
-					12px 12px 0 var(--color-checkbox-tada),
-					0 18px 0 var(--color-checkbox-tada),
-					-12px 12px 0 var(--color-checkbox-tada),
-					-18px 0 0 var(--color-checkbox-tada),
-					-12px -12px 0 var(--color-checkbox-tada);
+					0 -1.125em 0 var(--_tada-color-n, var(--_base-color)),
+					0.75em -0.75em 0 var(--_tada-color-ne, var(--_base-color)),
+					1.125em 0 0 var(--_tada-color-e, var(--_base-color)),
+					0.75em 0.75em 0 var(--_tada-color-se, var(--_base-color)),
+					0 1.125em 0 var(--_tada-color-s, var(--_base-color)),
+					-0.75em 0.75em 0 var(--_tada-color-sw, var(--_base-color)),
+					-1.125em 0 0 var(--_tada-color-w, var(--_base-color)),
+					-0.75em -0.75em 0 var(--_tada-color-nw, var(--_base-color));
 				transform: scale(0);
 			}
 
 			&:checked {
+				transition: background-color var(--_checkmark-animation-duration) ease;
 				background-color: var(--color-muted);
 				&:before {
-					transition: transform 300ms ease;
+					transition: transform var(--_checkmark-animation-duration) ease;
 					background-color: var(--color-background);
 					transform: scale(1);
 				}
 
 				&:after {
 					transition:
-						transform 400ms ease,
-						opacity 400ms ease;
+						transform var(--_tada-animation-duration) ease,
+						opacity var(--_tada-animation-duration) ease;
 					transform: scale(1);
 					opacity: 0;
 				}
 			}
-		}
-	}
-
-	textarea {
-		--_color-input-border: var(--color-input-border);
-		resize: none;
-		padding-inline: 1rem;
-		box-shadow: -2px 0 0 0 var(--_color-input-border);
-
-		&:focus {
-			--_color-input-border: transparent;
 		}
 	}
 }
@@ -231,27 +245,50 @@
 
 @layer theme {
 	:root {
-		--color-active: #fff;
-		--color-muted: oklch(43.43% 0.009 229.04);
+		--blue-50: #ebf8ff;
+		--blue-100: #cfedff;
+		--blue-200: #b4e4ff;
+		--blue-300: #96daff;
+		--blue-400: #74cfff;
+		--blue-500: #4bc5ff;
+		--blue-600: #389fd0;
+		--blue-700: #246f92;
+		--blue-800: #124056;
+		--blue-900: #11181c;
 
-		--color-background: oklch(20.38% 0.013 233.32);
+		--dark-50: #f5f5f5;
+		--dark-100: #e8e8e8;
+		--dark-200: #dcdcdc;
+		--dark-300: #cfcfcf;
+		--dark-400: #c3c3c3;
+		--dark-500: #b7b7b7;
+		--dark-600: #939393;
+		--dark-700: #666666;
+		--dark-800: #3b3b3b;
+		--dark-900: #181818;
+
+		--color-active: var(--dark-50);
+		--color-muted: var(--dark-800);
+
+		--color-background: var(--blue-900);
 		--color-text: var(--color-active);
 		--color-text-muted: var(--color-muted);
+		--color-text-highlighted: var(--blue-500);
 
-		--color-button-default-text: #000;
-		--color-button-default-bg: oklch(88.53% 0 0);
-		--color-button-default-active: oklch(50% 0.117 202.05);
+		--color-button-default-text: var(--dark-900);
+		--color-button-default-bg: var(--dark-200);
+		--color-button-default-active: var(--blue-600);
 
 		--color-border: var(--color-active);
 		--color-border-muted: var(--color-muted);
 
 		--color-modal-background: var(--color-background);
-		--color-modal-border: oklch(76.68% 0 0);
-		--color-modal-box-shadow: oklch(82.49% 0.117 202.05 / 50%);
+		--color-modal-border: var(--dark-300);
+		--color-modal-box-shadow: var(--blue-600);
 
-		--color-input-border: oklch(76.68% 0 0);
+		--color-input-border: var(--dark-600);
 		--color-input-active: var(--color-active);
 
-		--color-checkbox-tada: oklch(82.49% 0.117 202.05);
+		--color-checkbox-tada: var(--blue-500);
 	}
 }

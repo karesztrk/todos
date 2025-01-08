@@ -25,7 +25,7 @@
 </script>
 
 <svelte:head>
-	<title>Home</title>
+	<title>Todo</title>
 	<meta name="description" content="Todos" />
 </svelte:head>
 
