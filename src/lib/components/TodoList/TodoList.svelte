@@ -26,7 +26,7 @@
 
 		&[active] {
 			t-header {
-				color: #15ccec;
+				color: var(--color-text-highlighted);
 			}
 		}
 
