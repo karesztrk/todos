@@ -1,0 +1,16 @@
+{
+	"short_name": "todos",
+	"name": "todotrk",
+	"start_url": "/",
+	"icons": [
+		{ "src": "/icon-192.png", "type": "image/png", "sizes": "192x192" },
+		{ "src": "/icon-mask.png", "type": "image/png", "sizes": "512x512", "purpose": "maskable" },
+		{ "src": "/icon-512.png", "type": "image/png", "sizes": "512x512" }
+	],
+	"background_color": "#11181c",
+	"display": "standalone",
+	"scope": "/",
+	"theme_color": "#11181c",
+	"shortcuts": [],
+	"description": "A delightful todo app to manage your tasks"
+}
