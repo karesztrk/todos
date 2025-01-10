@@ -63,7 +63,7 @@
 		align-items: center;
 		gap: 20px;
 		border-block-end: 1px solid var(--color-border-muted);
-		overflow: hidden;
+		overflow: visible;
 
 		&[done] {
 			color: var(--color-text-muted);

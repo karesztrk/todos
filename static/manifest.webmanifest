@@ -1,6 +1,6 @@
 {
-	"short_name": "todos",
-	"name": "todotrk",
+	"short_name": "Todotrk",
+	"name": "Todotrk",
 	"start_url": "/",
 	"icons": [
 		{ "src": "/icon-192.png", "type": "image/png", "sizes": "192x192" },
