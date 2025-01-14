@@ -87,6 +87,7 @@
 			outline-offset: var(--outline-offset);
 		}
 
+		color: inherit;
 		width: 100%;
 		background: none;
 		border: none;

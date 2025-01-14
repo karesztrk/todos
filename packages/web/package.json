@@ -9,13 +9,14 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "prettier --write .",
-		"lint": "prettier --check . && eslint .",
-		"test:e2e": "playwright test",
-		"test": "npm run test:e2e"
+		"lint": "prettier --check . && eslint ."
 	},
 	"dependencies": {
 		"@lukeed/uuid": "^2.0.1",
 		"tinybase": "^5.4.4"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-auto": "^3.0.0"
 	},
 	"types": "./src/lib/index.ts",
 	"exports": {

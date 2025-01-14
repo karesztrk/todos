@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { db, type Todo as TodoType } from '$lib/repository/db';
-	import TodoList from '$lib/components/TodoList';
+	import TodoList from '../TodoList';
 	import TodoViewState from './TodoViewState.svelte';
-	import Todo from '$lib/components/Todo';
+	import Todo from '../Todo';
 	import { v4 as uuid } from '@lukeed/uuid';
 	import TodoDialog from '../TodoDialog/TodoDialog.svelte';
 	import { setViewContext } from './TodoViewContext.svelte';

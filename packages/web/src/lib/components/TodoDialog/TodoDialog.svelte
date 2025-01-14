@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Modal from '$lib/components/Modal';
+	import Modal from '../Modal';
 	import { db } from '$lib/repository/db';
 	import { getViewContext } from '../TodoView/TodoViewContext.svelte';
 	import { toDateString } from './TodoDialog.util';
