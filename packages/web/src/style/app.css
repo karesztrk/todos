@@ -1,6 +1,6 @@
 @import url('./reset.css') layer(reset);
 
-@layer reset, base, typography, theme, components, utilities, animations, viewtransition, customproperty, scrollanimation;
+@layer reset, base, typography, theme, components, utilities, animations, viewtransition, scrollanimation;
 
 :root {
 	--gap: clamp(2rem, 1vw, 3rem);

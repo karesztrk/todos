@@ -1,19 +1,20 @@
 <script lang="ts">
+	import { getStoreContext } from '$lib/repository/context';
 	import Modal from '../Modal';
-	import { db } from '$lib/repository/db';
 	import { getViewContext } from '../TodoView/TodoViewContext.svelte';
 	import { toDateString } from './TodoDialog.util';
 
-	const ctx = getViewContext();
+	const viewContext = getViewContext();
+	const storeContext = getStoreContext();
 
 	let show = $state(false);
 
 	const selectedTodo = $derived(
-		ctx.selectedTodo ? db.getRow('todos', ctx.selectedTodo) : undefined
+		viewContext.selectedTodo ? storeContext.getRow(viewContext.selectedTodo) : undefined
 	);
 
 	$effect(() => {
-		if (ctx.selectedTodo) {
+		if (viewContext.selectedTodo) {
 			show = true;
 		} else {
 			show = false;
@@ -21,37 +22,37 @@
 	});
 
 	const onClose = () => {
-		ctx.selectedTodo = undefined;
+		viewContext.selectedTodo = undefined;
 	};
 
 	const onDoneChange = (e: Event) => {
 		const target = e.target as HTMLInputElement;
 		const done = target.checked;
-		if (!ctx.selectedTodo) {
+		if (!viewContext.selectedTodo) {
 			return;
 		}
-		db.setCell('todos', ctx.selectedTodo, 'done', done);
+		storeContext.setCell(viewContext.selectedTodo, 'done', done);
 	};
 
 	const onTextChange = (e: Event) => {
 		const target = e.target as HTMLTextAreaElement;
 		const text = target.value;
-		if (!ctx.selectedTodo) {
+		if (!viewContext.selectedTodo) {
 			return;
 		}
-		db.setCell('todos', ctx.selectedTodo, 'text', text);
+		storeContext.setCell(viewContext.selectedTodo, 'text', text);
 	};
 
 	const onDateChange = (e: Event) => {
 		const target = e.target as HTMLInputElement;
 		const date = target.value;
-		if (!ctx.selectedTodo) {
+		if (!viewContext.selectedTodo) {
 			return;
 		}
 		if (date) {
-			db.setCell('todos', ctx.selectedTodo, 'date', date);
+			storeContext.setCell(viewContext.selectedTodo, 'date', date);
 		} else {
-			db.delCell('todos', ctx.selectedTodo, 'date');
+			storeContext.delCell(viewContext.selectedTodo, 'date');
 		}
 	};
 </script>

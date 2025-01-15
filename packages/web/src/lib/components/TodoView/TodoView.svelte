@@ -1,13 +1,16 @@
 <script lang="ts">
-	import { db, type Todo as TodoType } from '$lib/repository/db';
+	import { type Todo as TodoType } from '$lib/repository/db';
 	import TodoList from '../TodoList';
 	import TodoViewState from './TodoViewState.svelte';
 	import Todo from '../Todo';
 	import { v4 as uuid } from '@lukeed/uuid';
 	import TodoDialog from '../TodoDialog/TodoDialog.svelte';
 	import { setViewContext } from './TodoViewContext.svelte';
+	import { getStoreContext } from '$lib/repository/context';
 
 	const { todos = [], range }: { todos: TodoType[]; range: { start: Date; end: Date } } = $props();
+
+	const storeContext = getStoreContext();
 
 	$effect(() => {
 		const active = document.querySelector('t-list[active]');
@@ -24,7 +27,7 @@
 		const values = new FormData(target, e.submitter);
 		const text = values.get('text') as string | null;
 		if (text) {
-			db.setRow('todos', uuid(), {
+			storeContext.setRow(uuid(), {
 				done: false,
 				text,
 				date: date?.toISOString(),

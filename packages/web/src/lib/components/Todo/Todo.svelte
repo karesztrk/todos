@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { db, type Todo } from '$lib/repository/db';
+	import { getStoreContext } from '$lib/repository/context';
+	import { type Todo } from '$lib/repository/db';
 	import { getViewContext } from '../TodoView/TodoViewContext.svelte';
 
 	interface Props {
@@ -10,16 +11,17 @@
 
 	let element = $state<HTMLElement>();
 
-	const ctx = getViewContext();
+	const viewContext = getViewContext();
+	const storeContext = getStoreContext();
 
-	const checked = Boolean(todo !== null && todo.done);
+	const checked = $derived(Boolean(todo !== null && todo.done));
 
 	const onChange = (e: Event & { currentTarget: HTMLInputElement }) => {
 		if (todo === null) {
 			return;
 		}
 		const done = e.currentTarget.checked;
-		db.setCell('todos', todo.id, 'done', done);
+		storeContext.setCell(todo.id, 'done', done);
 
 		if (element) {
 			if (done) {
@@ -39,7 +41,7 @@
 	};
 
 	const onClick = () => {
-		ctx.selectedTodo = todo.id;
+		viewContext.selectedTodo = todo.id;
 	};
 
 	$effect(() => {});
@@ -49,7 +51,7 @@
 	{#if todo !== null}
 		<button type="button" onclick={onClick}>{todo.text}</button>
 	{/if}
-	<input type="checkbox" onchange={onChange} {checked} />
+	<input type="checkbox" onchange={onChange} {checked} defaultchecked={checked} />
 </t-todo>
 
 <style>

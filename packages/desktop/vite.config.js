@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig, searchForWorkspaceRoot } from "vite";
 import { sveltekit } from "@sveltejs/kit/vite";
 import { browserslistToTargets } from "lightningcss";
 import browserslist from "browserslist";
@@ -6,8 +6,7 @@ import browserslist from "browserslist";
 // @ts-expect-error process is a nodejs global
 const host = process.env.TAURI_DEV_HOST;
 
-// https://vitejs.dev/config/
-export default defineConfig(async () => ({
+export default defineConfig({
   plugins: [sveltekit()],
   css: {
     transformer: "lightningcss",
@@ -40,5 +39,11 @@ export default defineConfig(async () => ({
       // 3. tell vite to ignore watching `src-tauri`
       ignored: ["**/src-tauri/**"],
     },
+    fs: {
+      allow: [
+        // @ts-expect-error search up for workspace root
+        searchForWorkspaceRoot(process.cwd()),
+      ],
+    },
   },
-}));
+});

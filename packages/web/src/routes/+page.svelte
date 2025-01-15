@@ -2,17 +2,19 @@
 	import TodoView from '$lib/components/TodoView';
 	import TodoRange from '$lib/components/TodoView/TodoRange.svelte';
 	import { startOfWeek } from '$lib/components/TodoView/TodoView.util';
-	import { db, getAllTodos } from '$lib/repository/db';
+	import { getStoreContext } from '$lib/repository/context';
 
 	const now = new Date();
 
 	const start = startOfWeek(now);
 	const range = new TodoRange(start, 6);
 
-	let todos = $state(getAllTodos());
+	const store = getStoreContext();
 
-	db.addTableListener('todos', () => {
-		todos = getAllTodos();
+	let todos = $state(store.getAllTodos());
+
+	store.store.addTableListener('todos', () => {
+		todos = store.getAllTodos();
 	});
 
 	const next = () => {

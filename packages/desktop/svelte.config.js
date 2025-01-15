@@ -12,6 +12,7 @@ const config = {
     alias: {
       "@todotrk/web/style/*": "../web/src/style/*",
       "@todotrk/web/components/*": "../web/src/lib/components/*",
+      "@todotrk/web/repository/*": "../web/src/lib/repository/*",
     },
   },
 };

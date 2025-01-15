@@ -1,19 +1,21 @@
 <script lang="ts">
+  import { getStoreContext } from "$lib/repository/context";
   import TodoView from "@todotrk/web/components/TodoView";
   import TodoRange from "@todotrk/web/components/TodoView/TodoRange.svelte";
   import { startOfWeek } from "@todotrk/web/components/TodoView/TodoView.util";
-  // import { db, getAllTodos } from "$lib/repository/db";
+
+  const storeContext = getStoreContext();
 
   const now = new Date();
 
   const start = startOfWeek(now);
   const range = new TodoRange(start, 6);
 
-  let todos = $state([]);
+  let todos = $state(storeContext.getAllTodos());
 
-  // db.addTableListener("todos", () => {
-  //   todos = getAllTodos();
-  // });
+  storeContext.store.addTableListener("todos", () => {
+    todos = storeContext.getAllTodos();
+  });
 
   const next = () => {
     range.addDays(7);
