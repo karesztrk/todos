@@ -15,8 +15,7 @@
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-opener": "^2",
     "@tauri-apps/plugin-sql": "^2.2.0",
-    "@lukeed/uuid": "^2.0.1",
-    "tinybase": "^5.4.4"
+    "@lukeed/uuid": "^2.0.1"
   },
   "devDependencies": {
     "@sveltejs/adapter-static": "^3.0.6",

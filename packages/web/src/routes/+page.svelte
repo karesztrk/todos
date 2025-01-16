@@ -11,12 +11,6 @@
 
 	const store = getStoreContext();
 
-	let todos = $state(store.getAllTodos());
-
-	store.store.addTableListener('todos', () => {
-		todos = store.getAllTodos();
-	});
-
 	const next = () => {
 		range.addDays(7);
 	};
@@ -41,11 +35,7 @@
 	</hrgroup>
 
 	<article>
-		{#if !todos}
-			<div>Loading...</div>
-		{:else}
-			<TodoView {todos} {range} />
-		{/if}
+		<TodoView todos={store.getAllTodos()} {range} />
 	</article>
 </section>
 

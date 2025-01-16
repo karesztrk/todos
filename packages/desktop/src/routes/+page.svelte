@@ -11,12 +11,6 @@
   const start = startOfWeek(now);
   const range = new TodoRange(start, 6);
 
-  let todos = $state(storeContext.getAllTodos());
-
-  storeContext.store.addTableListener("todos", () => {
-    todos = storeContext.getAllTodos();
-  });
-
   const next = () => {
     range.addDays(7);
   };
@@ -41,11 +35,7 @@
   </hrgroup>
 
   <article>
-    {#if !todos}
-      <div>Loading...</div>
-    {:else}
-      <TodoView {todos} {range} />
-    {/if}
+    <TodoView todos={storeContext.getAllTodos()} {range} />
   </article>
 </section>
 

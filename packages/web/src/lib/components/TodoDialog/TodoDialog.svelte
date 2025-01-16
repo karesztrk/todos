@@ -50,9 +50,9 @@
 			return;
 		}
 		if (date) {
-			storeContext.setCell(viewContext.selectedTodo, 'date', date);
+			storeContext.setCell(viewContext.selectedTodo, 'date', new Date(date));
 		} else {
-			storeContext.delCell(viewContext.selectedTodo, 'date');
+			storeContext.deleteCell(viewContext.selectedTodo, 'date');
 		}
 	};
 </script>

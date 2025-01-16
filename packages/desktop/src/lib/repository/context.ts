@@ -1,10 +1,10 @@
 import { getContext, setContext } from "svelte";
-import Store from "./db";
+import TauriStore from "./db";
 
 const key = Symbol("store");
 
-export const getStoreContext = (): Store => getContext(key);
+export const getStoreContext = (): TauriStore => getContext(key);
 
 export const setStoreContext = () => {
-  setContext(key, new Store());
+  setContext(key, new TauriStore());
 };

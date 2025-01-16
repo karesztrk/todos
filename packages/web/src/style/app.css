@@ -7,7 +7,7 @@
 	--full: minmax(var(--gap), 1fr);
 	--content: calc(100% - var(--gap) * 2);
 
-	color-scheme: dark light;
+	color-scheme: dark;
 
 	background-color: var(--color-background);
 	color: var(--color-text);
@@ -227,12 +227,10 @@
 	}
 }
 
-@layer customproperty {
-	@property --background-size {
-		syntax: '<percentage>';
-		inherits: true;
-		initial-value: 0%;
-	}
+@property --background-size {
+	syntax: '<percentage>';
+	inherits: true;
+	initial-value: 0%;
 }
 
 @layer animations {

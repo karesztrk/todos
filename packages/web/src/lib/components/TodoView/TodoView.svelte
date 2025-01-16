@@ -17,6 +17,9 @@
 		if (active) {
 			active.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
 		}
+		return () => {
+			storeContext.cleanup();
+		};
 	});
 
 	const viewState = $derived(new TodoViewState(todos, range));
@@ -30,8 +33,8 @@
 			storeContext.setRow(uuid(), {
 				done: false,
 				text,
-				date: date?.toISOString(),
-				created: new Date().toISOString()
+				date,
+				created: new Date()
 			});
 			target.reset();
 		}
