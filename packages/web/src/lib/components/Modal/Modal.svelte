@@ -46,12 +46,12 @@
 		box-shadow: 0 0 8px 0 var(--color-modal-box-shadow);
 		opacity: 0;
 		container: modal / inline-size;
-		margin-block: 1rem;
-		block-size: 100dvh;
+		margin-block-end: 1.5rem;
+		min-block-size: 20svh;
 
 		@container main (width > 90ch) {
-			margin-block: auto;
-			block-size: revert;
+			margin-block-end: auto;
+			min-block-size: revert;
 		}
 
 		&::backdrop {
