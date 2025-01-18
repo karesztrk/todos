@@ -50,7 +50,7 @@
 			return;
 		}
 		if (date) {
-			storeContext.setCell(viewContext.selectedTodo, 'date', new Date(date));
+			storeContext.setCell(viewContext.selectedTodo, 'date', new Date(date).toDateString());
 		} else {
 			storeContext.deleteCell(viewContext.selectedTodo, 'date');
 		}
@@ -64,7 +64,7 @@
 			<input
 				id="date"
 				type="date"
-				value={selectedTodo?.date && toDateString(new Date(selectedTodo?.date))}
+				value={selectedTodo?.date && toDateString(selectedTodo?.date)}
 				onchange={onDateChange}
 			/>
 		</div>

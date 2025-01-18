@@ -39,8 +39,8 @@
 			storeContext.setRow(uuid(), {
 				done: false,
 				text,
-				date,
-				created: new Date()
+				date: date?.toDateString(),
+				created: new Date().toISOString()
 			});
 			target.reset();
 		}

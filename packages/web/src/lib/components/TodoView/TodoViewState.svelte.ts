@@ -48,7 +48,7 @@ class TodoViewState {
 	}
 
 	push(map: Map<string, Todo[]>, todo: Todo) {
-		const key = todo !== null && todo.date ? dateFormatter.format(todo.date) : 'someday';
+		const key = todo !== null && todo.date ? dateFormatter.format(new Date(todo.date)) : 'someday';
 		const todos = map.get(key) ?? [];
 		map.set(key, [...todos, todo].sort(this.sort));
 		return map;

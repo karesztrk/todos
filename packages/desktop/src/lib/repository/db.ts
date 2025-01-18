@@ -114,7 +114,6 @@ class TauriStore implements Store {
 	}
 
 	fillStore(data: TodoRow[]) {
-		console.log(this.todos);
 		for (const todo of data) {
 			this.todos.set(todo.id, this.convertRow(todo));
 		}
@@ -124,8 +123,8 @@ class TauriStore implements Store {
 		return {
 			...row,
 			done: row.done === 1,
-			date: new Date(row.date),
-			created: new Date(row.created)
+			date: row.date,
+			created: row.created
 		};
 	}
 }

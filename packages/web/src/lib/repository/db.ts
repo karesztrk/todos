@@ -5,8 +5,8 @@ export interface Todo {
 	id: string;
 	text: string;
 	done: boolean;
-	date?: Date;
-	created: Date;
+	date?: string;
+	created: string;
 }
 
 export type Cell = keyof Todo;
