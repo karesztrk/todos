@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Footer from '$lib/components/Footer';
 	import Header from '$lib/components/Header';
 	import { setStoreContext } from '$lib/repository/context';
 	import '../style/app.css';
@@ -14,11 +15,10 @@
 	{@render children()}
 </main>
 
-<footer></footer>
+<Footer />
 
 <style>
-	main,
-	footer {
+	main {
 		grid-column: content;
 		container: main / inline-size;
 	}

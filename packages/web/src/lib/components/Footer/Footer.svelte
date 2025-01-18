@@ -1,12 +1,11 @@
 <script lang="ts">
 </script>
 
-<header>
-	<nav></nav>
-</header>
+<footer></footer>
 
 <style>
-	header {
+	footer {
 		grid-column: content;
+		min-block-size: 50px;
 	}
 </style>

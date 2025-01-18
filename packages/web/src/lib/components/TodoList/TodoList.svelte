@@ -19,7 +19,8 @@
 
 <style>
 	t-list {
-		height: 100%;
+		--_min-height: 20dvh;
+		min-block-size: var(--_min-height);
 		display: grid;
 		grid-template-columns: 1fr;
 		grid-auto-rows: var(--row-height);

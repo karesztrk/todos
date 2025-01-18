@@ -46,6 +46,13 @@
 		box-shadow: 0 0 8px 0 var(--color-modal-box-shadow);
 		opacity: 0;
 		container: modal / inline-size;
+		margin-block: 1rem;
+		block-size: 100dvh;
+
+		@container main (width > 90ch) {
+			margin-block: auto;
+			block-size: revert;
+		}
 
 		&::backdrop {
 			backdrop-filter: blur(2px);
