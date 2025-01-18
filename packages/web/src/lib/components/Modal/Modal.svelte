@@ -27,9 +27,18 @@
 			onCloseProp(e);
 		}
 	};
+
+	const onClick = (e: Event) => {
+		// dismiss
+		if (e.target === dialog) {
+			dialog.close();
+		}
+	};
 </script>
 
-<dialog bind:this={dialog} onclose={onClose}>
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<dialog bind:this={dialog} onclose={onClose} onclick={onClick}>
 	<div>
 		{@render children?.()}
 		{@render actions?.()}
