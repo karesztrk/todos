@@ -3,12 +3,12 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"dev:web": "pnpm --filter web dev",
-		"dev:desktop": "pnpm --filter desktop tauri dev",
-		"dev:mobile": "pnpm --filter desktop tauri android dev",
-		"build:web": "pnpm --filter web build",
-		"build:desktop": "pnpm --filter desktop tauri build",
-		"build:mobile": "pnpm --filter desktop tauri android build --apk"
+		"web:dev": "pnpm --filter web dev",
+		"web:build": "pnpm --filter web build",
+		"desktop:dev": "pnpm --filter desktop tauri dev",
+		"desktop:build": "pnpm --filter desktop tauri build",
+		"mobile:dev": "pnpm --filter desktop tauri android dev",
+		"mobile:build": "pnpm --filter desktop tauri android build --apk"
 	},
 	"devDependencies": {
 		"@sveltejs/kit": "^2.9.0",
