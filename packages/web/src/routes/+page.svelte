@@ -1,7 +1,7 @@
 <script lang="ts">
 	import TodoView from '$lib/components/TodoView';
 	import TodoRange from '$lib/components/TodoView/TodoRange.svelte';
-	import { startOfWeek } from '$lib/components/TodoView/TodoView.util';
+	import { startOfWeek } from '$lib/util/date';
 	import { getStoreContext } from '$lib/repository/context';
 
 	const now = new Date();

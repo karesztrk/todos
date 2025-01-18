@@ -2,7 +2,7 @@
 	import { getStoreContext } from '$lib/repository/context';
 	import Modal from '../Modal';
 	import { getViewContext } from '../TodoView/TodoViewContext.svelte';
-	import { toDateString } from './TodoDialog.util';
+	import { toDateString } from '../../util/date';
 
 	const viewContext = getViewContext();
 	const storeContext = getStoreContext();
@@ -50,7 +50,7 @@
 			return;
 		}
 		if (date) {
-			storeContext.setCell(viewContext.selectedTodo, 'date', new Date(date).toDateString());
+			storeContext.setCell(viewContext.selectedTodo, 'date', toDateString(date));
 		} else {
 			storeContext.deleteCell(viewContext.selectedTodo, 'date');
 		}

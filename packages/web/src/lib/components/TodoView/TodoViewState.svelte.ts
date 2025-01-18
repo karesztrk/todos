@@ -1,4 +1,4 @@
-import { isToday, weekDays } from './TodoView.util';
+import { isToday, weekDays } from '../../util/date';
 import type { Todo } from '$lib/repository/db';
 const dateFormatter = new Intl.DateTimeFormat('en', {
 	month: '2-digit',
