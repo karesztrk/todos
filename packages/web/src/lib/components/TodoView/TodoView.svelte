@@ -85,7 +85,7 @@
 <style>
 	t-view {
 		--row-height: calc(30px + 1rem);
-		--_min-height: 60svh;
+		--_min-height: 80svh;
 		--_columns: 6;
 		--_break-point: 600px;
 		min-block-size: var(--_min-height);
