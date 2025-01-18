@@ -14,11 +14,17 @@
 
 	$effect(() => {
 		const active = document.querySelector('t-list[active]');
+		let timeout: number;
 		if (active) {
-			active.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+			timeout = setTimeout(() => {
+				active.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+			}, 100);
 		}
 		return () => {
 			storeContext.cleanup();
+			if (timeout) {
+				clearTimeout(timeout);
+			}
 		};
 	});
 
@@ -38,6 +44,14 @@
 			});
 			target.reset();
 		}
+	};
+
+	const onInput = (e: Event) => {
+		(e?.currentTarget as HTMLElement)?.scrollIntoView({
+			behavior: 'smooth',
+			block: 'center',
+			inline: 'nearest'
+		});
 	};
 
 	setViewContext();
@@ -62,7 +76,7 @@
 			{#each viewState.list() as todo (todo.id)}
 				<Todo {todo} />
 			{/each}
-			<input type="text" name="text" />
+			<input type="text" name="text" oninput={onInput} />
 		</TodoList>
 	</form>
 	<TodoDialog />
