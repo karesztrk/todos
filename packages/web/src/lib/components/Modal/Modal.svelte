@@ -115,7 +115,7 @@
 		}
 
 		> div {
-			padding: 1rem 1.5rem;
+			padding: 0.5rem 1.5rem;
 
 			@container modal (width > 50ch) {
 				padding: 2rem 2.5rem;
@@ -125,9 +125,8 @@
 		button {
 			display: block;
 			width: 100%;
-			margin: 0;
-			padding: 0;
 			outline: none;
+			padding-block-end: 1rem;
 
 			background: none;
 			svg {
@@ -138,5 +137,9 @@
 				display: none;
 			}
 		}
+	}
+
+	dialog[open]::backdrop {
+		opacity: 1;
 	}
 </style>
