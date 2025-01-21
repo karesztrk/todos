@@ -11,6 +11,9 @@
 	let { show = $bindable(), children, actions, onClose: onCloseProp }: Props = $props();
 
 	let dialog = $state<HTMLDialogElement>();
+	let dragging = $state(false);
+	let mouseDownY = $state(0);
+	let offset = $state(0);
 
 	$effect(() => {
 		if (show && dialog) {
@@ -28,17 +31,41 @@
 		}
 	};
 
-	const onClick = (e: Event) => {
-		// dismiss
-		if (e.target === dialog) {
+	const onMouseDown = (e: MouseEvent) => {
+		e.preventDefault();
+		dragging = true;
+		mouseDownY = e.screenY;
+
+		document.addEventListener('mousemove', onMouseMove);
+		document.addEventListener('mouseup', onMouseUp);
+	};
+
+	const onMouseMove = (e: MouseEvent) => {
+		if (dragging) {
+			offset = Math.max(0, e.screenY - mouseDownY);
+		}
+	};
+
+	const onMouseUp = () => {
+		if (dialog && dragging && offset > 0) {
 			dialog.close();
 		}
+		offset = 0;
+		dragging = false;
+
+		document.removeEventListener('mousemove', onMouseMove);
+		document.removeEventListener('mouseup', onMouseUp);
 	};
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <!-- svelte-ignore a11y_click_events_have_key_events -->
-<dialog bind:this={dialog} onclose={onClose} onclick={onClick}>
+<dialog bind:this={dialog} onclose={onClose} style:--offset={offset + 'px'}>
+	<button aria-label="Close" onmousedown={onMouseDown}>
+		<svg width="50" height="6" viewBox="0 0 50 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<rect width="50" height="6" rx="3" />
+		</svg>
+	</button>
 	<div>
 		{@render children?.()}
 		{@render actions?.()}
@@ -47,20 +74,38 @@
 
 <style>
 	dialog {
-		width: min(100%, 32em);
-		border-radius: 12px;
-		border: 2px solid var(--color-modal-border);
+		--_inline-margin: 0;
+		--_block-end-margin: 0;
+		--_min-height: 20svh;
+		--_min-width: 100%;
+		--_border-radius: 20px;
+		--_border: 2px solid var(--color-modal-border);
+		--_shadow-blur: 20px;
+		--_shadow-spead: 4px;
+		border-top-left-radius: var(--_border-radius);
+		border-top-right-radius: var(--_border-radius);
+		border: 0;
 		padding: 0;
 		background: var(--color-modal-background);
-		box-shadow: 0 0 8px 0 var(--color-modal-box-shadow);
-		opacity: 0;
+		box-shadow: 0 0 var(--_shadow-blur) var(--_shadow-spead) var(--color-modal-box-shadow);
 		container: modal / inline-size;
-		margin-block-end: 1.5rem;
-		min-block-size: 20svh;
+		margin-block-end: var(--_block-end-margin);
+		margin-inline: var(--_inline-margin);
+		min-block-size: var(--_min-height);
+		min-inline-size: var(--_min-width);
+		translate: 0 var(--offset, 0px);
+		transition: translate 50ms linear;
 
 		@container main (width > 90ch) {
-			margin-block-end: auto;
-			min-block-size: revert;
+			--_inline-margin: auto;
+			--_block-end-margin: auto;
+			--_min-width: min(100%, 32em);
+			--_min-height: auto;
+			--_shadow-spead: 2px;
+			--_shadow-blur: 4px;
+
+			--_border-radius: 12px;
+			border-radius: var(--_border-radius);
 		}
 
 		&::backdrop {
@@ -76,19 +121,22 @@
 			}
 		}
 
-		&[open] {
-			opacity: 1;
-		}
-	}
+		button {
+			position: absolute;
+			top: 0;
+			inset-inline: 0;
+			margin: 0;
+			padding: 0;
+			outline: none;
 
-	dialog[open]::backdrop {
-		opacity: 1;
-	}
+			background: none;
+			svg {
+				fill: var(--color-button-default-bg);
+			}
 
-	@starting-style {
-		dialog[open],
-		dialog[open]::backdrop {
-			opacity: 0;
+			@container main (width > 90ch) {
+				display: none;
+			}
 		}
 	}
 </style>

@@ -19,7 +19,6 @@ Thumbs.db
 
 # Vite
 vite.config.js.timestamp-*
-vite.config.ts.timestamp-*
 db.sqlite
 packages/desktop/src-tauri/gen/android/keystore.properties
 packages/web/.netlify
