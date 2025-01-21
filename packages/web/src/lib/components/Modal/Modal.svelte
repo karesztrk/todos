@@ -14,6 +14,7 @@
 	let dragging = $state(false);
 	let mouseDownY = $state(0);
 	let offset = $state(0);
+	const maxOffset = 75;
 
 	$effect(() => {
 		if (show && dialog) {
@@ -31,13 +32,13 @@
 		}
 	};
 
-	const onMouseDown = (e: MouseEvent) => {
+	const onMouseDown = (e: PointerEvent) => {
 		e.preventDefault();
 		dragging = true;
 		mouseDownY = e.screenY;
 
-		document.addEventListener('mousemove', onMouseMove);
-		document.addEventListener('mouseup', onMouseUp);
+		document.addEventListener('pointermove', onMouseMove);
+		document.addEventListener('pointerup', onMouseUp);
 	};
 
 	const onMouseMove = (e: MouseEvent) => {
@@ -47,21 +48,21 @@
 	};
 
 	const onMouseUp = () => {
-		if (dialog && dragging && offset > 0) {
+		if (dialog && dragging && offset > maxOffset) {
 			dialog.close();
 		}
 		offset = 0;
 		dragging = false;
 
-		document.removeEventListener('mousemove', onMouseMove);
-		document.removeEventListener('mouseup', onMouseUp);
+		document.removeEventListener('pointermove', onMouseMove);
+		document.removeEventListener('pointerup', onMouseUp);
 	};
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <dialog bind:this={dialog} onclose={onClose} style:--offset={offset + 'px'}>
-	<button aria-label="Close" onmousedown={onMouseDown}>
+	<button aria-label="Close" onpointerdown={onMouseDown}>
 		<svg width="50" height="6" viewBox="0 0 50 6" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<rect width="50" height="6" rx="3" />
 		</svg>
@@ -122,9 +123,8 @@
 		}
 
 		button {
-			position: absolute;
-			top: 0;
-			inset-inline: 0;
+			display: block;
+			width: 100%;
 			margin: 0;
 			padding: 0;
 			outline: none;
