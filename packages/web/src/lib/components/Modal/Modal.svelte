@@ -12,9 +12,9 @@
 
 	let dialog = $state<HTMLDialogElement>();
 	let dragging = $state(false);
-	let mouseDownY = $state(0);
+	let initialY = $state(0);
 	let offset = $state(0);
-	const maxOffset = 75;
+	const maxOffset = 125;
 
 	$effect(() => {
 		if (show && dialog) {
@@ -24,6 +24,8 @@
 
 	const onClose = (e: Event) => {
 		show = false;
+		dragging = false;
+		offset = 0;
 		if (dialog) {
 			dialog.close();
 		}
@@ -32,40 +34,83 @@
 		}
 	};
 
-	const onMouseDown = (e: PointerEvent) => {
-		e.preventDefault();
-		dragging = true;
-		mouseDownY = e.screenY;
+	const onDialogClick = (e: Event) => {
+		if (e.target === dialog) {
+			onClose(e);
+		}
+	};
 
-		document.addEventListener('pointermove', onMouseMove);
-		document.addEventListener('pointerup', onMouseUp);
+	const onMouseDown = (e: MouseEvent) => {
+		if (!dragging) {
+			dragging = true;
+			initialY = e.screenY;
+
+			document.addEventListener('mousemove', onMouseMove);
+			document.addEventListener('mouseup', onDragEnd);
+			document.addEventListener('mouseleave', onDragEnd);
+		}
+	};
+
+	const onTouchStart = (e: TouchEvent) => {
+		e.preventDefault();
+		if (!dragging) {
+			dragging = true;
+			initialY = e.touches[0].clientY;
+			document.addEventListener('touchmove', onTouchMove);
+			document.addEventListener('touchend', onDragEnd);
+			document.addEventListener('touchcancel', onDragEnd);
+		}
 	};
 
 	const onMouseMove = (e: MouseEvent) => {
 		if (dragging) {
-			offset = Math.max(0, e.screenY - mouseDownY);
+			offset = Math.max(0, e.screenY - initialY);
 		}
 	};
 
-	const onMouseUp = () => {
+	const onTouchMove = (e: TouchEvent) => {
+		e.preventDefault();
+		if (dragging) {
+			offset = Math.max(0, e.touches[0].clientY - initialY);
+		}
+	};
+
+	const onDragEnd = (e: Event) => {
 		if (dialog && dragging && offset > maxOffset) {
+			e.preventDefault();
 			dialog.close();
 		}
 		offset = 0;
 		dragging = false;
+		document.removeEventListener('mousemove', onMouseMove);
+		document.removeEventListener('mouseup', onDragEnd);
+		document.removeEventListener('mouseleave', onDragEnd);
 
-		document.removeEventListener('pointermove', onMouseMove);
-		document.removeEventListener('pointerup', onMouseUp);
+		document.removeEventListener('touchmove', onTouchMove);
+		document.removeEventListener('touchend', onDragEnd);
+		document.removeEventListener('touchcancel', onDragEnd);
+	};
+
+	const onContextMenu = (e: Event) => {
+		e.preventDefault();
 	};
 </script>
 
-<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+<svelte:document />
 <!-- svelte-ignore a11y_click_events_have_key_events -->
-<dialog bind:this={dialog} onclose={onClose} style:--offset={offset + 'px'}>
-	<button aria-label="Close" onpointerdown={onMouseDown}>
-		<svg width="50" height="6" viewBox="0 0 50 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<rect width="50" height="6" rx="3" />
-		</svg>
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+<dialog bind:this={dialog} onclose={onClose} style:--offset={`${offset}px`} onclick={onDialogClick}>
+	<!-- svelte-ignore a11y_autofocus -->
+	<button
+		onmousedown={onMouseDown}
+		ontouchstart={onTouchStart}
+		oncontextmenu={onContextMenu}
+		type="button"
+		autofocus
+		data-dragging={dragging ? 'true' : undefined}
+	>
+		<span></span>
+		<span class="visually-hidden">Drawer handle</span>
 	</button>
 	<div>
 		{@render children?.()}
@@ -95,7 +140,9 @@
 		min-block-size: var(--_min-height);
 		min-inline-size: var(--_min-width);
 		translate: 0 var(--offset, 0px);
-		transition: translate 50ms linear;
+		transition: translate 25ms ease-in-out;
+		will-change: transform;
+		backface-visibility: hidden;
 
 		@container main (width > 90ch) {
 			--_inline-margin: auto;
@@ -115,22 +162,40 @@
 		}
 
 		> div {
-			padding: 0.5rem 1.5rem;
+			padding-block-start: 0rem;
+			padding-block-end: 0.5rem;
+			padding-inline: 1.5rem;
 
 			@container modal (width > 50ch) {
-				padding: 2rem 2.5rem;
+				padding-block-start: 1rem;
+				padding-block-end: 2rem;
+				padding-inline: 2.5rem;
 			}
 		}
 
 		button {
-			display: block;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
 			width: 100%;
 			outline: none;
-			padding-block-end: 1rem;
-
+			block-size: 2.5rem;
 			background: none;
-			svg {
-				fill: var(--color-button-default-bg);
+			user-select: none;
+
+			span:not(.visually-hidden) {
+				width: 8ch;
+				height: 6px;
+				border-radius: 10px;
+				background: var(--color-button-default-bg);
+				transition: background-color 200ms ease;
+			}
+
+			&[data-dragging] {
+				span {
+					background-color: var(--color-button-default-active);
+				}
 			}
 
 			@container main (width > 90ch) {
