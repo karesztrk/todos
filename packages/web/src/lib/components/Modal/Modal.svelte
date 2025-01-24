@@ -12,9 +12,8 @@
 
 	let dialog = $state<HTMLDialogElement>();
 	let dragging = $state(false);
-	let initialY = $state(0);
 	let offset = $state(0);
-	const maxOffset = 125;
+	let initialY = $state(0);
 
 	$effect(() => {
 		if (show && dialog) {
@@ -25,7 +24,6 @@
 	const onClose = (e: Event) => {
 		show = false;
 		dragging = false;
-		offset = 0;
 		if (dialog) {
 			dialog.close();
 		}
@@ -41,54 +39,104 @@
 	};
 
 	const onMouseDown = (e: MouseEvent) => {
-		if (!dragging) {
-			dragging = true;
-			initialY = e.screenY;
-
-			document.addEventListener('mousemove', onMouseMove);
-			document.addEventListener('mouseup', onDragEnd);
-			document.addEventListener('mouseleave', onDragEnd);
+		if (dragging) {
+			return;
 		}
+		offset = 0;
+		dragging = true;
+		initialY = e.screenY;
+
+		document.addEventListener('mousemove', onMouseMove);
+		document.addEventListener('mouseup', onDragEnd);
+		document.addEventListener('mouseleave', onDragEnd);
 	};
 
 	const onTouchStart = (e: TouchEvent) => {
 		e.preventDefault();
-		if (!dragging) {
-			dragging = true;
-			initialY = e.touches[0].clientY;
-			document.addEventListener('touchmove', onTouchMove);
-			document.addEventListener('touchend', onDragEnd);
-			document.addEventListener('touchcancel', onDragEnd);
+		if (dragging) {
+			return;
 		}
+		dragging = true;
+		initialY = e.touches[0].clientY;
+		document.addEventListener('touchmove', onTouchMove);
+		document.addEventListener('touchend', onDragEnd);
+		document.addEventListener('touchcancel', onDragEnd);
 	};
 
 	const onMouseMove = (e: MouseEvent) => {
-		if (dragging) {
-			offset = Math.max(0, e.screenY - initialY);
+		if (!dragging || !dialog) {
+			return;
 		}
+		const delta = Math.max(0, e.screenY - initialY);
+		const height = dialog.clientHeight;
+		offset = Math.ceil(Math.max(0, delta / height) * 100);
+
+		animateDialog();
 	};
 
 	const onTouchMove = (e: TouchEvent) => {
 		e.preventDefault();
-		if (dragging) {
-			offset = Math.max(0, e.touches[0].clientY - initialY);
+		if (!dragging || !dialog) {
+			return;
+		}
+		const delta = Math.max(0, e.touches[0].clientY - initialY);
+		const height = dialog.clientHeight;
+		offset = Math.ceil(Math.max(0, delta / height) * 100);
+
+		animateDialog();
+	};
+
+	const animateDialog = () => {
+		if (dialog) {
+			dialog.animate([{ '--offset': `${offset}%` }], {
+				duration: 25,
+				fill: 'both',
+				easing: 'linear'
+			});
 		}
 	};
 
 	const onDragEnd = (e: Event) => {
-		if (dialog && dragging && offset > maxOffset) {
-			e.preventDefault();
-			dialog.close();
+		if (!dialog || !dragging) {
+			return;
 		}
-		offset = 0;
-		dragging = false;
-		document.removeEventListener('mousemove', onMouseMove);
-		document.removeEventListener('mouseup', onDragEnd);
-		document.removeEventListener('mouseleave', onDragEnd);
 
-		document.removeEventListener('touchmove', onTouchMove);
-		document.removeEventListener('touchend', onDragEnd);
-		document.removeEventListener('touchcancel', onDragEnd);
+		e.preventDefault();
+
+		const closeHeightReached = offset > 40;
+		let animation;
+		if (closeHeightReached) {
+			animation = dialog.animate([{ '--offset': '110%' }], {
+				duration: 125,
+				fill: 'both',
+				easing: 'ease-in'
+			});
+		} else {
+			animation = dialog.animate([{ '--offset': '0%' }], {
+				duration: 200,
+				fill: 'both',
+				easing: 'ease-out'
+			});
+		}
+
+		animation.addEventListener('finish', () => {
+			if (dialog) {
+				if (closeHeightReached) {
+					dialog.close();
+				}
+				dialog.getAnimations().forEach((a) => a.cancel());
+				offset = 0;
+				dragging = false;
+			}
+
+			document.removeEventListener('mousemove', onMouseMove);
+			document.removeEventListener('mouseup', onDragEnd);
+			document.removeEventListener('mouseleave', onDragEnd);
+
+			document.removeEventListener('touchmove', onTouchMove);
+			document.removeEventListener('touchend', onDragEnd);
+			document.removeEventListener('touchcancel', onDragEnd);
+		});
 	};
 
 	const onContextMenu = (e: Event) => {
@@ -99,7 +147,7 @@
 <svelte:document />
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-<dialog bind:this={dialog} onclose={onClose} style:--offset={`${offset}px`} onclick={onDialogClick}>
+<dialog bind:this={dialog} onclose={onClose} onclick={onDialogClick}>
 	<!-- svelte-ignore a11y_autofocus -->
 	<button
 		onmousedown={onMouseDown}
@@ -139,8 +187,7 @@
 		margin-inline: var(--_inline-margin);
 		min-block-size: var(--_min-height);
 		min-inline-size: var(--_min-width);
-		translate: 0 var(--offset, 0px);
-		transition: translate 25ms ease-in-out;
+		translate: 0 var(--offset, 0%);
 		will-change: transform;
 		backface-visibility: hidden;
 

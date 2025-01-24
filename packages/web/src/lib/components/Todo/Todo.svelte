@@ -27,13 +27,13 @@
 			if (done) {
 				element.animate([{ '--background-size': '100%' }], {
 					duration: 200,
-					fill: 'forwards',
+					fill: 'both',
 					easing: 'ease'
 				});
 			} else {
 				element.animate([{ '--background-size': '0%' }], {
 					duration: 100,
-					fill: 'forwards',
+					fill: 'both',
 					easing: 'ease-out'
 				});
 			}
