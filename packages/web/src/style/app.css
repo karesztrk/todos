@@ -249,6 +249,12 @@
 	initial-value: 0%;
 }
 
+@property --offset {
+	syntax: '<percentage>';
+	inherits: true;
+	initial-value: 0%;
+}
+
 @layer animations {
 	@keyframes background-reveal {
 		to {
