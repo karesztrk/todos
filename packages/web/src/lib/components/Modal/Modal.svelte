@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import ModalDragState from './ModalDragState.svelte';
 
 	interface Props {
 		show?: boolean;
@@ -10,41 +11,34 @@
 
 	let { show = $bindable(), children, actions, onClose: onCloseProp }: Props = $props();
 
-	let dialog = $state<HTMLDialogElement>();
-	let dragging = $state(false);
-	let offset = $state(0);
-	let initialY = $state(0);
+	let element = $state<HTMLDialogElement>();
+	const dragState = new ModalDragState();
 
 	$effect(() => {
-		if (show && dialog) {
-			dialog.showModal();
+		if (show && element) {
+			element.showModal();
+			dragState.open();
 		}
 	});
 
 	const onClose = (e: Event) => {
-		show = false;
-		dragging = false;
-		if (dialog) {
-			dialog.close();
-		}
+		clean();
 		if (onCloseProp) {
 			onCloseProp(e);
 		}
 	};
 
 	const onDialogClick = (e: Event) => {
-		if (e.target === dialog) {
+		if (e.target === element) {
 			onClose(e);
 		}
 	};
 
 	const onMouseDown = (e: MouseEvent) => {
-		if (dragging) {
+		if (dragState.dragging) {
 			return;
 		}
-		offset = 0;
-		dragging = true;
-		initialY = e.screenY;
+		dragState.start(e.screenY);
 
 		document.addEventListener('mousemove', onMouseMove);
 		document.addEventListener('mouseup', onDragEnd);
@@ -53,101 +47,81 @@
 
 	const onTouchStart = (e: TouchEvent) => {
 		e.preventDefault();
-		if (dragging) {
+		if (dragState.dragging) {
 			return;
 		}
-		dragging = true;
-		initialY = e.touches[0].clientY;
+		dragState.start(e.touches[0].clientY);
 		document.addEventListener('touchmove', onTouchMove);
 		document.addEventListener('touchend', onDragEnd);
 		document.addEventListener('touchcancel', onDragEnd);
 	};
 
 	const onMouseMove = (e: MouseEvent) => {
-		if (!dragging || !dialog) {
+		if (!dragState.dragging || !element) {
 			return;
 		}
-		const delta = Math.max(0, e.screenY - initialY);
-		const height = dialog.clientHeight;
-		offset = Math.ceil(Math.max(0, delta / height) * 100);
-
-		animateDialog();
+		dragState.drag(e.screenY, element);
 	};
 
 	const onTouchMove = (e: TouchEvent) => {
 		e.preventDefault();
-		if (!dragging || !dialog) {
+		if (!dragState.dragging || !element) {
 			return;
 		}
-		const delta = Math.max(0, e.touches[0].clientY - initialY);
-		const height = dialog.clientHeight;
-		offset = Math.ceil(Math.max(0, delta / height) * 100);
 
-		animateDialog();
-	};
-
-	const animateDialog = () => {
-		if (dialog) {
-			dialog.animate([{ '--offset': `${offset}%` }], {
-				duration: 25,
-				fill: 'both',
-				easing: 'linear'
-			});
-		}
+		dragState.drag(e.touches[0].clientY, element);
 	};
 
 	const onDragEnd = (e: Event) => {
-		if (!dialog || !dragging) {
+		if (!element || !dragState.dragging) {
 			return;
 		}
 
 		e.preventDefault();
 
-		const closeHeightReached = offset > 40;
-		let animation;
-		if (closeHeightReached) {
-			animation = dialog.animate([{ '--offset': '110%' }], {
-				duration: 125,
-				fill: 'both',
-				easing: 'ease-in'
-			});
+		if (dragState.isCloseHeightReached()) {
+			clean();
 		} else {
-			animation = dialog.animate([{ '--offset': '0%' }], {
-				duration: 200,
-				fill: 'both',
-				easing: 'ease-out'
-			});
+			resetHeight();
 		}
 
-		animation.addEventListener('finish', () => {
-			if (dialog) {
-				if (closeHeightReached) {
-					dialog.close();
-				}
-				dialog.getAnimations().forEach((a) => a.cancel());
-				offset = 0;
-				dragging = false;
-			}
+		document.removeEventListener('mousemove', onMouseMove);
+		document.removeEventListener('mouseup', onDragEnd);
+		document.removeEventListener('mouseleave', onDragEnd);
 
-			document.removeEventListener('mousemove', onMouseMove);
-			document.removeEventListener('mouseup', onDragEnd);
-			document.removeEventListener('mouseleave', onDragEnd);
-
-			document.removeEventListener('touchmove', onTouchMove);
-			document.removeEventListener('touchend', onDragEnd);
-			document.removeEventListener('touchcancel', onDragEnd);
-		});
+		document.removeEventListener('touchmove', onTouchMove);
+		document.removeEventListener('touchend', onDragEnd);
+		document.removeEventListener('touchcancel', onDragEnd);
 	};
 
 	const onContextMenu = (e: Event) => {
 		e.preventDefault();
+	};
+
+	const resetHeight = () => {
+		dragState.stop('open');
+	};
+
+	const clean = () => {
+		show = false;
+		dragState.stop('close');
+		setTimeout(() => {
+			if (element) {
+				element.close();
+			}
+		}, 175);
 	};
 </script>
 
 <svelte:document />
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-<dialog bind:this={dialog} onclose={onClose} onclick={onDialogClick}>
+<dialog
+	bind:this={element}
+	onclose={onClose}
+	onclick={onDialogClick}
+	style="--offset: {dragState.current}%"
+>
 	<!-- svelte-ignore a11y_autofocus -->
 	<button
 		onmousedown={onMouseDown}
@@ -155,7 +129,7 @@
 		oncontextmenu={onContextMenu}
 		type="button"
 		autofocus
-		data-dragging={dragging ? 'true' : undefined}
+		data-dragging={dragState.dragging ? 'true' : undefined}
 	>
 		<span></span>
 		<span class="visually-hidden">Drawer handle</span>
@@ -187,9 +161,12 @@
 		margin-inline: var(--_inline-margin);
 		min-block-size: var(--_min-height);
 		min-inline-size: var(--_min-width);
+		transition: translate 175ms
+			linear(0, 0.091 2.5%, 0.75 12.1%, 0.892 16.1%, 0.972 20.8%, 0.996 24.6%, 1.005 29.8%, 1);
 		translate: 0 var(--offset, 0%);
 		will-change: transform;
 		backface-visibility: hidden;
+		touch-action: none;
 
 		@container main (width > 90ch) {
 			--_inline-margin: auto;
@@ -221,6 +198,8 @@
 		}
 
 		button {
+			backface-visibility: hidden;
+			touch-action: none;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
