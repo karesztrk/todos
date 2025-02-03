@@ -4,9 +4,11 @@
 	import { setStoreContext } from '$lib/repository/context';
 	import '@todotrk/web/style/app.css';
 	import '@todotrk/web/style/fonts.css';
+	import { setNotificationContext } from '$lib/notification/context';
 
 	let { children } = $props();
 	setStoreContext();
+	setNotificationContext();
 </script>
 
 <Header />

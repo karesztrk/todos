@@ -53,9 +53,10 @@
 		--_color-button-bg: var(--color-button-default-bg);
 		--_color-button-text: var(--color-button-default-text);
 		--_color-button-active: var(--color-button-default-active);
+		--_margin-inline: 1.375em;
 
 		border: 0;
-		padding: 0.25em 1.375em;
+		padding: 0.25em var(--_margin-inline);
 		color: var(--_color-button-text);
 		background-color: var(--_color-button-bg);
 		border-radius: 6px;
@@ -70,6 +71,18 @@
 		&:focus-visible {
 			outline: 2px solid var(--_color-button-bg);
 			outline-offset: var(--outline-offset);
+		}
+
+		&.secondary {
+			--_color-button-bg: transparent;
+			--_color-button-text: currenColor;
+
+			border: 1px solid currentColor;
+		}
+
+		&:has(> svg) {
+			--_margin-inline: 0.625em;
+			display: flex;
 		}
 	}
 

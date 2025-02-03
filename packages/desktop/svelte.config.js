@@ -13,6 +13,7 @@ const config = {
 			'@todotrk/web/style/*': '../web/src/style/*',
 			'@todotrk/web/components/*': '../web/src/lib/components/*',
 			'@todotrk/web/repository/*': '../web/src/lib/repository/*',
+			'@todotrk/web/notification/*': '../web/src/lib/nofitication/*',
 			'@todotrk/web/util/*': '../web/src/lib/util/*'
 		}
 	}
