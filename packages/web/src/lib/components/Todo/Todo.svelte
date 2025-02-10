@@ -2,6 +2,7 @@
 	import { getStoreContext } from '$lib/repository/context';
 	import { type Todo } from '$lib/repository/db';
 	import { getViewContext } from '../TodoView/TodoViewContext.svelte';
+	import buttonSound from '../../../sounds/button-6.mp3';
 
 	interface Props {
 		todo: Todo;
@@ -10,6 +11,7 @@
 	const { todo }: Props = $props();
 
 	let element = $state<HTMLElement>();
+	let audio = $state<HTMLAudioElement>();
 
 	const viewContext = getViewContext();
 	const storeContext = getStoreContext();
@@ -33,6 +35,7 @@
 					fill: 'both',
 					easing: elasticEasing
 				});
+				audio?.play();
 			} else {
 				element.animate([{ '--background-size': '0%' }], {
 					duration: 100,
@@ -52,12 +55,14 @@
 	bind:this={element}
 	done={todo !== null && todo.done ? '' : undefined}
 	role="listitem"
-	style:--_transition-easing={elasticEasing}
+	style:--transition-easing={elasticEasing}
 >
 	{#if todo !== null}
 		<button type="button" onclick={onClick}>{todo.text}</button>
 	{/if}
 	<input type="checkbox" onchange={onChange} {checked} defaultchecked={checked} />
+
+	<audio bind:this={audio} src={buttonSound} controls></audio>
 </t-todo>
 
 <style>
@@ -77,6 +82,10 @@
 			--background-size: 100%;
 		}
 
+		audio {
+			display: none;
+		}
+
 		button {
 			inline-size: 100%;
 			overflow: hidden;
@@ -90,6 +99,7 @@
 			padding: 0;
 			margin-inline: 4px;
 			color: inherit;
+			user-select: none;
 
 			background-size: var(--background-size);
 			background-image: linear-gradient(
