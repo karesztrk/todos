@@ -10,16 +10,18 @@ export const toDateString = (input: string) =>
 	formatISO9075(new Date(input), { representation: 'date' });
 
 export const getFirstDayOfWeek = (): Day => {
-	const userLocale = 'en';
+	const userLocale = 'hu';
 	let firstDay: Day;
 
 	try {
 		const locale = new Intl.Locale(userLocale);
-		firstDay = locale.weekInfo?.firstDay ?? 1;
+
+		firstDay = locale?.getWeekInfo()?.firstDay ?? 1;
 	} catch {
 		// Fallback to Monday (1) if API not supported
 		firstDay = 1;
 	}
+
 	return firstDay;
 };
 
