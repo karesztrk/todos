@@ -2,6 +2,7 @@
 	import { getStoreContext } from '$lib/repository/context';
 	import { type Todo } from '$lib/repository/db';
 	import { getViewContext } from '../TodoView/TodoViewContext.svelte';
+	import buttonSound from '../../../sounds/button-6.mp3';
 
 	interface Props {
 		todo: Todo;
@@ -10,11 +11,15 @@
 	const { todo }: Props = $props();
 
 	let element = $state<HTMLElement>();
+	let audio = $state<HTMLAudioElement>();
 
 	const viewContext = getViewContext();
 	const storeContext = getStoreContext();
 
 	const checked = $derived(Boolean(todo !== null && todo.done));
+
+	const elasticEasing =
+		'linear(0, 0.03 1.5%, 0.121 3.2%, 0.851 13%, 0.99 16.4%, 1.063 20.2%, 1.076 22.3%, 1.075 24.8%, 1.013 35.9%, 0.995 43.4%, 1)';
 
 	const onChange = (e: Event & { currentTarget: HTMLInputElement }) => {
 		if (todo === null) {
@@ -26,10 +31,11 @@
 		if (element) {
 			if (done) {
 				element.animate([{ '--background-size': '100%' }], {
-					duration: 200,
+					duration: 500,
 					fill: 'both',
-					easing: 'ease'
+					easing: elasticEasing
 				});
+				audio?.play();
 			} else {
 				element.animate([{ '--background-size': '0%' }], {
 					duration: 100,
@@ -43,37 +49,45 @@
 	const onClick = () => {
 		viewContext.selectedTodo = todo.id;
 	};
-
-	$effect(() => {});
 </script>
 
-<t-todo bind:this={element} done={todo !== null && todo.done ? '' : undefined} role="listitem">
+<t-todo
+	bind:this={element}
+	done={todo !== null && todo.done ? '' : undefined}
+	role="listitem"
+	style:--transition-easing={elasticEasing}
+>
 	{#if todo !== null}
 		<button type="button" onclick={onClick}>{todo.text}</button>
 	{/if}
 	<input type="checkbox" onchange={onChange} {checked} defaultchecked={checked} />
+
+	<audio bind:this={audio} src={buttonSound} controls></audio>
 </t-todo>
 
 <style>
 	t-todo {
 		--_strike-size: 2px;
 		--_gradient-size: calc(var(--_strike-size) * 0.5);
-		--_transition-duration: 400ms;
+		--_transition-duration: 300ms;
 
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
+		display: grid;
+		grid-template-columns: 1fr auto;
+		align-content: center;
 		gap: 20px;
 		border-block-end: 1px solid var(--color-border-muted);
-		overflow: visible;
 
 		&[done] {
 			color: var(--color-text-muted);
 			--background-size: 100%;
 		}
 
+		audio {
+			display: none;
+		}
+
 		button {
-			flex: 1;
+			inline-size: 100%;
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
@@ -85,6 +99,7 @@
 			padding: 0;
 			margin-inline: 4px;
 			color: inherit;
+			user-select: none;
 
 			background-size: var(--background-size);
 			background-image: linear-gradient(
@@ -95,7 +110,7 @@
 				transparent calc(50% + var(--_gradient-size))
 			);
 
-			transition: color var(--_transition-duration) ease;
+			transition: color var(--_transition-duration) var(--_transition-easing);
 			&:active {
 				outline: revert;
 			}
@@ -103,7 +118,6 @@
 
 		input {
 			margin-inline-end: calc(var(--outline-offset) * 2);
-			flex-shrink: 0;
 		}
 	}
 </style>

@@ -1,0 +1,29 @@
+name: Build
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up pnpm
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm i
+
+      - name: Build web
+        run: pnpm web:build
+
+      - name: Build desktop
+        run: pnpm desktop:build

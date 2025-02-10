@@ -122,7 +122,23 @@
 	input {
 		&[type='checkbox'] {
 			--_checkmark-animation-duration: 400ms;
-			--_tada-animation-duration: 500ms;
+			--_tada-animation-duration: 600ms;
+			--_tada-animation-opacity-duration: 250ms;
+			--_tada-animation-opacity-delay: 200ms;
+			/* elastic easing */
+			--_tada-animation-easing: linear(
+				0,
+				0.03 1.5%,
+				0.121 3.2%,
+				0.851 13%,
+				0.99 16.4%,
+				1.063 20.2%,
+				1.076 22.3%,
+				1.075 24.8%,
+				1.013 35.9%,
+				0.995 43.4%,
+				1
+			);
 			appearance: none;
 			/* For iOS < 15 */
 			background-color: var(--color-background);
@@ -166,7 +182,7 @@
 				left: 0.25em;
 				width: 0.3125em;
 				height: 0.3125em;
-				border-radius: 0.125em;
+				border-radius: 50%;
 				box-shadow:
 					0 -1.125em 0 var(--_tada-color-n, var(--_base-color)),
 					0.75em -0.75em 0 var(--_tada-color-ne, var(--_base-color)),
@@ -180,18 +196,20 @@
 			}
 
 			&:checked {
-				transition: background-color var(--_checkmark-animation-duration) ease;
+				transition: background-color var(--_checkmark-animation-duration)
+					var(--_tada-animation-easing);
 				background-color: var(--color-muted);
 				&:before {
-					transition: transform var(--_checkmark-animation-duration) ease;
+					transition: transform var(--_checkmark-animation-duration) var(--_tada-animation-easing);
 					background-color: var(--color-background);
 					transform: scale(1);
 				}
 
 				&:after {
 					transition:
-						transform var(--_tada-animation-duration) ease,
-						opacity var(--_tada-animation-duration) ease;
+						transform var(--_tada-animation-duration) var(--_tada-animation-easing),
+						opacity var(--_tada-animation-opacity-duration) var(--_tada-animation-opacity-delay)
+							linear;
 					transform: scale(1);
 					opacity: 0;
 				}

@@ -44,6 +44,8 @@ class TauriStore implements Store {
 			rawValue = value ? 1 : 0;
 		} else if (value === undefined || value === null) {
 			rawValue = '';
+		} else {
+			rawValue = value;
 		}
 
 		this.db
