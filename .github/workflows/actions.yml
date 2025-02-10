@@ -1,4 +1,5 @@
-name: Build
+name: Todotrk
+run-name: Running actions by @${{ github.actor }}
 
 on:
   pull_request:
