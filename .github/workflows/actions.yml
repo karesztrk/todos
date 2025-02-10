@@ -12,10 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
+      - name: Install prerequisites
+        run: |
+          apt-get update
+          apt-get -y install pkg-config
+
       - uses: actions/checkout@v4
 
       - name: Set up pnpm
-      - uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v2
         with:
           version: 9
           run_install: false
