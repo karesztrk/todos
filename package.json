@@ -7,8 +7,7 @@
 		"web:build": "pnpm --filter web build",
 		"desktop:dev": "pnpm --filter desktop tauri dev",
 		"desktop:build": "pnpm --filter desktop tauri build",
-		"mobile:dev": "pnpm --filter desktop tauri android dev",
-		"mobile:build": "pnpm --filter desktop tauri android build --apk"
+		"mobile:dev": "pnpm run dev"
 	},
 	"devDependencies": {
 		"@sveltejs/kit": "^2.9.0",

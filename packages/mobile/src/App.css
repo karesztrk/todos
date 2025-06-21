@@ -1,0 +1,4 @@
+.main {
+  grid-column-start: 2;
+  /* container: main / inline-size; */
+}
